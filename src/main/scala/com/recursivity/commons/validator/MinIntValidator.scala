@@ -8,4 +8,8 @@ package com.recursivity.commons.validator
  * To change this template use File | Settings | File Templates.
  */
 
-class MinIntValidator
+class MinIntValidator(key: String, min: Int, value: => Int) extends Validator{
+  def getKey = key
+
+  def isValid = (min <= value)
+}

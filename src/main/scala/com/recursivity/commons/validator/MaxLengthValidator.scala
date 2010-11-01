@@ -8,7 +8,7 @@ package com.recursivity.commons.validator
  * To change this template use File | Settings | File Templates.
  */
 
-class MaxLengthValidator(maxLength: Int, key: String, value: => String) extends Validator{
+class MaxLengthValidator(key: String, maxLength: Int, value: => String) extends Validator{
   def getKey = key
 
   def isValid: Boolean = {

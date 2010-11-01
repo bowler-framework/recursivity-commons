@@ -13,7 +13,7 @@ import org.scalatest.FunSuite
 class StringLengthValidatorTest extends FunSuite{
   test("MinLength test"){
     val bean = new MyBean("hello", 1, new java.util.Date, Some(1))
-    val validator = new MinLengthValidator(3, "text", {bean.text})
+    val validator = new MinLengthValidator("text", 3, {bean.text})
     assert(validator.isValid)
     bean.text = "12"
     assert(!validator.isValid)
@@ -22,7 +22,7 @@ class StringLengthValidatorTest extends FunSuite{
 
   test("MaxLength test"){
     val bean = new MyBean("hello", 1, new java.util.Date, Some(1))
-    val validator = new MaxLengthValidator(3, "text", {bean.text})
+    val validator = new MaxLengthValidator("text", 3, {bean.text})
     assert(!validator.isValid)
     bean.text = "12"
     assert(validator.isValid)
@@ -30,7 +30,7 @@ class StringLengthValidatorTest extends FunSuite{
 
   test("Length range test"){
     val bean = new MyBean("hello", 1, new java.util.Date, Some(1))
-    val validator = new StringLengthValidator(3, 5, "text", {bean.text})
+    val validator = new StringLengthValidator("text", 3, 5, {bean.text})
     assert(validator.isValid)
     bean.text = "12"
     assert(!validator.isValid)

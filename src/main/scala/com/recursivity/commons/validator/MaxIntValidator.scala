@@ -8,4 +8,8 @@ package com.recursivity.commons.validator
  * To change this template use File | Settings | File Templates.
  */
 
-class MaxIntValidator
+class MaxIntValidator(key: String, max: Int, value: => Int) extends Validator{
+  def getKey = key
+
+  def isValid = (max >= value)
+}

@@ -8,4 +8,8 @@ package com.recursivity.commons.validator
  * To change this template use File | Settings | File Templates.
  */
 
-class EqualsValidator
+class EqualsValidator(key: String, value1: => Any, value2: => Any) extends Validator{
+  def getKey = key
+
+  def isValid = (value1 == value2)
+}
