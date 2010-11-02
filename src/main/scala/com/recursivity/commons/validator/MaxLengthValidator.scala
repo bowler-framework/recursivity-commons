@@ -16,4 +16,6 @@ class MaxLengthValidator(key: String, maxLength: Int, value: => String) extends 
     if(string != null && string.length <= maxLength) return true
     else return false
   }
+
+  def getReplaceModel = List(("max", maxLength))
 }

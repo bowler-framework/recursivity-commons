@@ -1,5 +1,7 @@
 package com.recursivity.commons.validator
 
+import collection.mutable.MutableList
+
 /**
  * Created by IntelliJ IDEA.
  * User: wfaler
@@ -22,5 +24,7 @@ class NotNullOrNoneValidator[T](key: String, value: => T) extends Validator{
     return true
   }
 
-   def getKey = key
+  def getKey = key
+
+  def getReplaceModel = new MutableList[Tuple2[String, Any]].toList
 }

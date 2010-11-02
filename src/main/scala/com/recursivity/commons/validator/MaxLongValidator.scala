@@ -12,4 +12,7 @@ class MaxLongValidator(key: String, max: Long, value: => Long) extends Validator
   def getKey = key
 
   def isValid = (max >= value)
+
+
+  def getReplaceModel = List(("max", max))
 }

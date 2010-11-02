@@ -1,5 +1,7 @@
 package com.recursivity.commons.validator
 
+import collection.mutable.MutableList
+
 /**
  * Created by IntelliJ IDEA.
  * User: wfaler
@@ -12,4 +14,6 @@ class EqualsValidator(key: String, value1: => Any, value2: => Any) extends Valid
   def getKey = key
 
   def isValid = (value1 == value2)
+
+  def getReplaceModel = new MutableList[Tuple2[String, Any]].toList
 }

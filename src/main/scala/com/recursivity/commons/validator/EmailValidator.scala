@@ -1,6 +1,7 @@
 package com.recursivity.commons.validator
 
 import java.util.regex.Pattern
+import collection.mutable.MutableList
 
 /**
  * Created by IntelliJ IDEA.
@@ -18,4 +19,7 @@ class EmailValidator(key: String, value: => String) extends Validator{
     val m = p.matcher({value})
     return m.matches
   }
+
+
+  def getReplaceModel = new MutableList[Tuple2[String, Any]].toList
 }

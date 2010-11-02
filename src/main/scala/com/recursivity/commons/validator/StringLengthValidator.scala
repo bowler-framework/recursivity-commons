@@ -16,4 +16,6 @@ class StringLengthValidator(key: String, minLength: Int, maxLength: Int, value: 
     if(string != null && string.length <= maxLength && string.length >= minLength) return true;
     else return false;
   }
+
+  def getReplaceModel = List(("min", minLength), ("max", maxLength))
 }

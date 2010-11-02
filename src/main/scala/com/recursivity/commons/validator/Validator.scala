@@ -11,8 +11,13 @@ package com.recursivity.commons.validator
 trait Validator{
   def isValid: Boolean
 
-  /*
-    * Identifying key for this validator, such as a key to an error message in a properties file.
+  /**
+   * returns a list of replace-string values to be replaced in any message, such as "min", "max" for length related validators
+   */
+  def getReplaceModel: List[Tuple2[String, Any]]
+
+  /**
+   * Returns the key, such as a property name that this validator is bound to
    */
   def getKey: String
 }

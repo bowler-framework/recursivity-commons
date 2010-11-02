@@ -16,4 +16,6 @@ class MinLengthValidator(key: String, minLength: Int, value: => String) extends 
     if(string != null &&  string.length >= minLength) return true;
     else return false;
   }
+
+  def getReplaceModel = List(("min", minLength))
 }

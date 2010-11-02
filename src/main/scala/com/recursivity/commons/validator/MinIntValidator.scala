@@ -12,4 +12,6 @@ class MinIntValidator(key: String, min: Int, value: => Int) extends Validator{
   def getKey = key
 
   def isValid = (min <= value)
+
+  def getReplaceModel = List(("min", min))
 }

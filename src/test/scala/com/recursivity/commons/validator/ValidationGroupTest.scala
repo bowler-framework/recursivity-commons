@@ -37,6 +37,7 @@ class ValidationGroupTest extends FunSuite{
     group add min
     val notNull = new NotNullOrNoneValidator("null", {bean.value})
     group add notNull
+    
 
     val failures = group.validateAndReturnFailures
 
@@ -47,4 +48,6 @@ class ValidationGroupTest extends FunSuite{
     assert(failures.contains(max))
     assert(failures.contains(notNull))
   }
+
+
 }
