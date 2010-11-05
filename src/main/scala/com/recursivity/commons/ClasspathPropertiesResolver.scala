@@ -41,26 +41,17 @@ object ClasspathPropertiesResolver {
   }
 
   private def loadProperties(context: Class[_], locale: String): Properties = {
-    var path: String = null
     var map = contexts(context.getName)
-    if (locale == null){
-      path = "/" + context.getName.replace(".", "/") + ".properties"
-    }else{
-      path = "/" + context.getName.replace(".", "/") + "_" + locale + ".properties"
-    }
-    println(path + " locale: " + locale)
 
     var properties = new Properties
     try {
-      val obj = new ClasspathPropertiesResolver
-      properties.load(obj.getClass.getResourceAsStream(path))
+      properties.load(ClasspathResourceResolver.getResource(context, ".properties", locale))
     } catch {
       case e: NullPointerException => {
-        println(path + " " + e)
         if (locale != null)
           properties = map("default")
         else
-          throw new NullPointerException("No Validator message properties file found in classpath: " + path)
+          throw new NullPointerException("No Validator message properties file found in classpath for context: " + context.getName + " _" + locale)
       }
     }
     if (locale == null) map += "default" -> properties
@@ -70,5 +61,3 @@ object ClasspathPropertiesResolver {
   }
 
 }
-
-class ClasspathPropertiesResolver
