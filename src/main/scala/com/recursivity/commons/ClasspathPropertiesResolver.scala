@@ -45,7 +45,7 @@ object ClasspathPropertiesResolver {
 
     var properties = new Properties
     try {
-      properties.load(ClasspathResourceResolver.getResource(context, ".properties", locale))
+      properties.load(ClasspathResourceResolver.getAbsoluteResource(context, ".properties", locale))
     } catch {
       case e: NullPointerException => {
         if (locale != null)
