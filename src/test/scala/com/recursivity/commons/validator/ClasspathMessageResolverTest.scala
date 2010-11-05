@@ -44,4 +44,15 @@ class ClasspathMessageResolverTest extends FunSuite{
     //println(result)
     assert("'your text' must be at least 8 characters long".equals(result))
   }
+
+  test("no property for key defined"){
+    val bean = new MyBean("hello", 5, 2 days from_now, None)
+    val minLen = new MinLengthValidator("howdy", 8, {bean.text})
+    assert(!minLen.isValid)
+
+    val resolver = new ClasspathMessageResolver(this.getClass)
+    val result = resolver.resolveMessage(minLen)
+    //println(result)
+    assert("howdy must be at least 8 characters long".equals(result))
+  }
 }

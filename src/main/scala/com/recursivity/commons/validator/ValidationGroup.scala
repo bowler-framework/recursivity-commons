@@ -39,4 +39,5 @@ class ValidationGroup(messageResolver: MessageResolver = null){
     })
     failed.toList
   }
+  
 }

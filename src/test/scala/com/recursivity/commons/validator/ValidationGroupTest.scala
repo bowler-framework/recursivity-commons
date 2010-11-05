@@ -2,6 +2,8 @@ package com.recursivity.commons.validator
 
 import org.scalatest.FunSuite
 import com.recursivity.commons.DateHelper._
+import java.util.Date
+
 /**
  * Created by IntelliJ IDEA.
  * User: wfaler
@@ -47,6 +49,38 @@ class ValidationGroupTest extends FunSuite{
     assert(failures.contains(min))
     assert(failures.contains(max))
     assert(failures.contains(notNull))
+  }
+
+  test("validation messages"){
+    // setup a bean to validate
+    val bean = new MyBean("hello", 5, new Date, None)
+
+    // new ValidationGroup with a ClassPathMessageResolver
+    val group = new ValidationGroup(new ClasspathMessageResolver(this.getClass))
+
+    // add the validators to the ValidationGroup
+    group.add(new MinLengthValidator("hello", 8, {bean.text}))
+    group.add(new MaxIntValidator("max", 3, {bean.number}))
+    group.add(new MinIntValidator("min", 6, {bean.number}))
+    group.add(new NotNullOrNoneValidator("null", {bean.value}))
+
+    // validate and return error messages, a List of Tuple2's with (key, errorMessage) format.
+    val failures = group.validateAndReturnErrorMessages
+
+    failures.foreach(f =>{
+      if(f._1.equals("hello")){
+        assert(f._2.equals("Howdy must be at least 8 characters long"))
+      }else if(f._1.equals("max")){
+        assert(f._2.equals("MaxInt must be < 3"))
+      }else if(f._1.equals("min")){
+        println(f._2)
+        assert(f._2.equals("MinInt must be > 6"))
+      }else if(f._1.equals("null")){
+        assert(f._2.equals("'NotNull Value' cannot be null or empty"))
+      }else
+        fail
+    })
+    
   }
 
 

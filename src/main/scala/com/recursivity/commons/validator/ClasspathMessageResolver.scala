@@ -17,7 +17,14 @@ class ClasspathMessageResolver(context: Class[_], locale: String = null) extends
   def resolveMessage(validator: Validator): String = {
     val properties = ClasspathPropertiesResolver.getProperties(context, locale)
     var message = properties.get(validator.getClass.getSimpleName).toString
-    val key = properties.get(validator.getKey).toString
+    var key = validator.getKey
+    try{
+      key = properties.get(validator.getKey).toString
+    }catch{
+      case e: NullPointerException => {
+        // do nothing, just use the plain key instead
+      }
+    }
     message = message.replace("{key}", key)
     validator.getReplaceModel.foreach(tuple => {
       message = message.replace("{" + tuple._1 + "}", "" + tuple._2)
