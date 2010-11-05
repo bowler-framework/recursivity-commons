@@ -16,7 +16,7 @@ val bean = new MyBean("hello", 5, new Date, None)
 // new ValidationGroup with a ClassPathMessageResolver
 val group = new ValidationGroup(new ClasspathMessageResolver(this.getClass))
 
-// add the validators to the ValidationGroup, not how we pass an anonymous function that will get the value/variable we want to validate.
+// add the validators to the ValidationGroup, note how we pass an anonymous function that will get the value/variable we want to validate.
 group.add(new MinLengthValidator("hello", 8, {bean.text}))
 group.add(new MaxIntValidator("max", 3, {bean.number}))
 group.add(new MinIntValidator("min", 6, {bean.number}))
