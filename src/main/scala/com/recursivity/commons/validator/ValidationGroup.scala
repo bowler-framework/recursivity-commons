@@ -2,6 +2,7 @@ package com.recursivity.commons.validator
 
 import collection.mutable.MutableList
 
+
 /**
  * Created by IntelliJ IDEA.
  * User: wfaler
@@ -10,7 +11,7 @@ import collection.mutable.MutableList
  * To change this template use File | Settings | File Templates.
  */
 
-class ValidationGroup{
+class ValidationGroup(messageResolver: MessageResolver = null){
   private val validators = new MutableList[Validator]
   
   def add(validator: Validator) = {
@@ -22,6 +23,19 @@ class ValidationGroup{
     validators.foreach(f => {
       if(!f.isValid)
         failed  += f
+    })
+    failed.toList
+  }
+
+  def validateAndReturnErrorMessages: List[Tuple2[String, String]] = {
+    if(messageResolver == null)
+      throw new IllegalStateException("No MessageResolver set for ValidationGroup")
+    val failed = new MutableList[Tuple2[String, String]]
+    validators.foreach(f => {
+      if(!f.isValid){
+        val tuple = (f.getKey, messageResolver.resolveMessage(f))
+        failed += tuple
+      }
     })
     failed.toList
   }
