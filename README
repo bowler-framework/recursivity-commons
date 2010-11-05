@@ -1,4 +1,5 @@
 Various Java- and Scala utilities with no outside library dependencies.
+Built with SBT (Simple-Build-Tool)
 
 Java classes: not written by me, but stuff I often use and compiled from various books and open source sources.
 
