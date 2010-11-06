@@ -35,6 +35,7 @@ class ClasspathTextResourceTest extends FunSuite{
   }
 
   def close(is: InputStream){
+    println("closing: " + is)
     is.close
   }
 }
