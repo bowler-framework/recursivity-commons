@@ -17,15 +17,5 @@ trait StringInputStreamReader{
   def load(is: InputStream): String = {
     return Source.fromInputStream(is).getLines.reduceLeft(_ + _)
   }
- /* def load(is: InputStream): String = {
-    val reader = new BufferedReader(new InputStreamReader(is))
-    val sb = new StringBuilder();
-    var line : String = null
-    while ((line = reader.readLine) != null) {
-      sb.append(line + "\n")
-    }
-    return sb.toString
-  }  */
 
-  // possibly: Source.fromInputStream(is).getLines.reduceLeft(_ + _)
 }

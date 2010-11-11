@@ -1,4 +1,4 @@
-package com.recursivity.jpa;
+package com.recursivity.commons;
 /*
  * Copyright (c) 2005 Wille Faler
  *

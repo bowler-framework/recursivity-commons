@@ -30,8 +30,4 @@ object DateHelper {
 
   implicit def convertInt2DateHelper(number: Int) = new DateHelper(number)
 
-  def main(args: Array[String]){
-    println(2 days ago)
-  }
-
 }
