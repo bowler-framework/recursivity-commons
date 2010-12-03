@@ -23,6 +23,8 @@ object TransformerRegistry{
   registry += classOf[java.lang.Double] -> classOf[DoubleTransformer]
   registry += classOf[java.lang.Float] -> classOf[FloatTransformer]
   registry += classOf[Long] -> classOf[LongTransformer]
+  registry += classOf[Short] -> classOf[ShortTransformer]
+  registry += classOf[java.lang.Short] -> classOf[ShortTransformer]
 
 
 
