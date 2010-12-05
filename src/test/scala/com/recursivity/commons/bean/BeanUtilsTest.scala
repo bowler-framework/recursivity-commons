@@ -22,7 +22,7 @@ class BeanUtilsTest extends FunSuite{
 
   test("set bean values"){
     val map = Map("nonexistent" -> "hello", "name" -> "wille", "long" -> "1", "int" -> "1","short" -> "2","double" -> "3","float" -> "4",
-      "bool" -> "true","decimal" -> "3.14","option" -> "someOption","list" -> List("1", "2", "3").toArray)
+      "bool" -> "true","decimal" -> "3.14","option" -> "someOption","list" -> List("1.12", "2.1", "3.14").toArray)
 
     val bean = BeanUtils.instantiate(classOf[TestBean], map).asInstanceOf[TestBean]
 
@@ -35,22 +35,48 @@ class BeanUtilsTest extends FunSuite{
     assert(bean.decimal == new BigDecimal(new java.math.BigDecimal("3.14")))
     assert(bean.bool == true)
 
-    //list option to test
-   // assert(bean.name == "wille")
-   // assert(bean.name == "wille")
-
+    assert(bean.list(0).equals(new BigDecimal(new java.math.BigDecimal("1.12"))))
+    assert(bean.list(1).equals(new BigDecimal(new java.math.BigDecimal("2.1"))))
+    assert(bean.list(2).equals(new BigDecimal(new java.math.BigDecimal("3.14"))))
     
   }
 
-  test("List with primitive reflected generic type"){
-    
+  test("option with list"){
+    val map = Map("list" -> List("1", "2", "3", "4", "5"))
+    val bean = BeanUtils.instantiate(classOf[NestedGenerics], map).asInstanceOf[NestedGenerics]
+    assert(bean != null)
+    val list = bean.list.get
+    assert(list != null)
+    println(list)
+    assert(list.size == 5)
+    assert(list(0) == 1)
+    assert(list(1) == 2)
+    assert(list(2) == 3)
+    assert(list(3) == 4)
+    assert(list(4) == 5)
+  }
+
+  test("Option type with primitive reflected generic type"){
+    val map = Map("num" -> "true")
+    val bean = BeanUtils.instantiate(classOf[PrimitiveOption], map).asInstanceOf[PrimitiveOption]
+    assert(bean != null)
+    assert(bean.num.equals(Some(true)))
   }
 
   test("Set"){
+    val map = Map("set" -> List("1", "2", "3", "4", "4"))
+    val bean = BeanUtils.instantiate(classOf[SetBean], map).asInstanceOf[SetBean]
+    assert(bean != null)
+    assert(bean.set.size == 4)
+    assert(bean.set.foldLeft(0)((b,a) => b + a) == 10)
+  }
 
+  test("Array"){
+    
   }
 
   test("MutableList"){
+    val set = Set(1, 2, 3, 4)
 
   }
 
@@ -61,6 +87,7 @@ class BeanUtilsTest extends FunSuite{
   test("ListSet & other concrete mutable"){
     
   }
+
 
   test("java.util.Set"){
 
@@ -81,6 +108,12 @@ class BeanUtilsTest extends FunSuite{
 
 
 }
+
+case class SetBean(set: Set[Int])
+
+case class PrimitiveOption(num: Option[Boolean])
+
+case class NestedGenerics(list: Option[List[Int]])
 
 class BaseBean(val name: String)
 

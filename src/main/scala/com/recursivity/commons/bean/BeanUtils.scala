@@ -56,7 +56,6 @@ object BeanUtils {
 
       }
     })
-    println(list.size)
     return cons.newInstance(list.toArray: _*)
   }
 
@@ -67,7 +66,7 @@ object BeanUtils {
       field.setAccessible(true)
       if(classOf[ParameterizedType].isAssignableFrom(field.getGenericType.getClass)){
         val parameterized = field.getGenericType.asInstanceOf[ParameterizedType]
-        field.set(bean, resolveGenerifiedValue(fieldCls, parameterized, value))
+        field.set(bean, resolveGenerifiedValue(fieldCls, GenericsParser.parseDefinition(parameterized), value))
       }else{
         val transformer = TransformerRegistry.resolveTransformer(fieldCls)
         field.set(bean, transformer.toValue(value.toString))
@@ -76,24 +75,44 @@ object BeanUtils {
       case e: NoSuchFieldException => {
         if (cls.getSuperclass != null)
           setProperty(cls.getSuperclass, bean, key, value)
-        else
-          println("traversed super classes, no field named " + key)
       }
     }
   }
 
-  def resolveGenerifiedValue(cls: Class[_], genericType: ParameterizedType, input: Any): Any = {
+  def resolveGenerifiedValue(cls: Class[_], genericType: GenericTypeDefinition, input: Any): Any = {
+
     if (classOf[TraversableLike[_ <: Any, _ <: Any]].isAssignableFrom(cls)) { // temporary workaround, collection types not yet supported
-      val args = genericType.getActualTypeArguments
-      println("type args: " + args(0).getClass.getName)
-      val list = new MutableList[Any]
-      list += new BigDecimal(new java.math.BigDecimal("3.14"))
-      return list.toList
+      val c = Class.forName(genericType.genericTypes.get.head.clazz)
+      val transformer = TransformerRegistry.resolveTransformer(c)
+      if(cls.equals(classOf[List[_]]) || cls.equals(classOf[Array[_]]) || cls.equals(classOf[Set[_]])){
+        val list = new MutableList[Any]
+        if(input.isInstanceOf[List[_]]){
+          val l = input.asInstanceOf[List[_]]
+          l.foreach(f => list += transformer.toValue(f.toString))
+        }else if(input.isInstanceOf[Array[_]]){
+          val array = input.asInstanceOf[Array[_]]
+          array.foreach(f => list += transformer.toValue(f.toString))
+        }
+        if(cls.equals(classOf[List[_]]))
+          return list.toList
+        else if(cls.equals(classOf[Set[_]]))
+          return list.toSet
+        else if(cls.equals(cls.equals(classOf[Array[_]])))
+          return list.toArray
+      }
+      return null
     } else if (classOf[java.util.Collection[_ <: Any]].isAssignableFrom(cls)) {
       return null
     } else if (classOf[Option[_ <: Any]].isAssignableFrom(cls)) {
-      println("option type not handled")
-      return None
+      val c = Class.forName(genericType.genericTypes.get.head.clazz)
+      if(genericType.genericTypes.get.head.genericTypes.equals(None)){
+        val transformer = TransformerRegistry.resolveTransformer(c)
+        return Some(transformer.toValue(input.toString))
+      }else{
+        val t = genericType.genericTypes.get.head
+        val targetCls = Class.forName(t.clazz)
+        return Some(resolveGenerifiedValue(targetCls, t, input))
+      }
     } else {
       return null
     }
