@@ -1,9 +1,8 @@
 package com.recursivity.commons.bean
 
-import java.lang.reflect.{TypeVariable, ParameterizedType}
+import java.lang.reflect.{ParameterizedType}
 import collection.immutable._
-import collection.generic.Growable
-import collection.{SeqLike, TraversableLike}
+import collection.{TraversableLike}
 import collection.mutable.{DoubleLinkedList, LinkedList, Builder, MutableList}
 
 /**
@@ -60,12 +59,11 @@ object BeanUtils {
     return cons.newInstance(list.toArray: _*).asInstanceOf[T]
   }
 
-  def setProperty(cls: Class[_], bean: Any, key: String, value: Any) {
+  private def setProperty(cls: Class[_], bean: Any, key: String, value: Any) {
     try {
       val field = cls.getDeclaredField(key)
       val fieldCls = getClassForJavaPrimitive(field.getType)
       field.setAccessible(true)
-      println(fieldCls.getName)
       if (classOf[ParameterizedType].isAssignableFrom(field.getGenericType.getClass) || fieldCls.equals(classOf[Array[_]])) {
         val parameterized = field.getGenericType.asInstanceOf[ParameterizedType]
         field.set(bean, resolveGenerifiedValue(fieldCls, GenericsParser.parseDefinition(parameterized), value))
@@ -81,7 +79,7 @@ object BeanUtils {
     }
   }
 
-  def resolveGenerifiedValue(cls: Class[_], genericType: GenericTypeDefinition, input: Any): Any = {
+  private def resolveGenerifiedValue(cls: Class[_], genericType: GenericTypeDefinition, input: Any): Any = {
 
     if (classOf[TraversableLike[_ <: Any, _ <: Any]].isAssignableFrom(cls)) { // temporary workaround, collection types not yet supported
       val list = valueList(cls, genericType, input)
