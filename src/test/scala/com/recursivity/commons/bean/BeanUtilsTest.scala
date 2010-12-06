@@ -109,24 +109,64 @@ class BeanUtilsTest extends FunSuite{
   }
 
   test("java.util.Set"){
-
+    val map = Map("set" -> List("1", "2", "3", "4", "4"))
+    val bean = BeanUtils.instantiate[JavaSet](classOf[JavaSet], map)
+    assert(bean != null)
+    assert(bean.set.size == 4)
+    var i = 0
+    val iter = bean.set.iterator
+    while(iter.hasNext)
+      i = i + iter.next
+    assert(10 == i)
   }
 
   test("java.util.List"){
-
+    val map = Map("list" -> List("1", "2", "3", "4", "4"))
+    val bean = BeanUtils.instantiate[JavaList](classOf[JavaList], map)
+    assert(bean != null)
+    assert(bean.list.size == 5)
+    var i = 0
+    val iter = bean.list.iterator
+    while(iter.hasNext)
+      i = i + iter.next
+    assert(14 == i)
   }
 
   test("concrete java.util.Set"){
-
+    val map = Map("set" -> List("1", "2", "3", "4", "4"))
+    val bean = BeanUtils.instantiate[JavaTreeSet](classOf[JavaTreeSet], map)
+    assert(bean != null)
+    assert(bean.set.size == 4)
+    var i = 0
+    val iter = bean.set.iterator
+    while(iter.hasNext)
+      i = i + iter.next
+    assert(10 == i)
   }
 
   test("concrete java.util.List"){
-    
+    val map = Map("list" -> List("1", "2", "3", "4", "4"))
+    val bean = BeanUtils.instantiate[JavaLinkedList](classOf[JavaLinkedList], map)
+    assert(bean != null)
+    assert(bean.list.size == 5)
+    var i = 0
+    val iter = bean.list.iterator
+    while(iter.hasNext)
+      i = i + iter.next
+    assert(14 == i)
   }
 
 
 
 }
+
+case class JavaLinkedList(list: java.util.LinkedList[Int])
+
+case class JavaList(list: java.util.List[Int])
+
+case class JavaSet(set: java.util.Set[Int])
+
+case class JavaTreeSet(set: java.util.TreeSet[Int])
 
 case class LinkedListBean(list: LinkedList[Int])
 

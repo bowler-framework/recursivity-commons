@@ -80,7 +80,6 @@ object BeanUtils {
   }
 
   private def resolveGenerifiedValue(cls: Class[_], genericType: GenericTypeDefinition, input: Any): Any = {
-
     if (classOf[TraversableLike[_ <: Any, _ <: Any]].isAssignableFrom(cls)) { // temporary workaround, collection types not yet supported
       val list = valueList(cls, genericType, input)
       return resolveTraversableOrArray(cls, list)
@@ -104,7 +103,25 @@ object BeanUtils {
   }
 
   private def resolveJavaCollectionType(cls: Class[_], list: MutableList[_]): Any = {
-    return null
+    if(classOf[java.util.Set[_]].isAssignableFrom(cls)){
+      var set: java.util.Set[Any] = null
+      try{
+        set = cls.newInstance.asInstanceOf[java.util.Set[Any]]
+      }catch{
+        case e: InstantiationException => set = new java.util.HashSet[Any]
+      }
+      list.foreach(b => set.add(b))
+      return set
+    }else{
+      var l: java.util.List[Any] = null
+      try{
+        l = cls.newInstance.asInstanceOf[java.util.List[Any]]
+      }catch{
+        case e: InstantiationException => l = new java.util.ArrayList[Any]
+      }
+      list.foreach(b => l.add(b))
+      return l
+    }
   }
 
   private def valueList(cls: Class[_], genericType: GenericTypeDefinition, input: Any): MutableList[Any] = {
