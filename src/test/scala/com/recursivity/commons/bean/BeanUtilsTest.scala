@@ -1,6 +1,8 @@
 package com.recursivity.commons.bean
 
 import org.scalatest.FunSuite
+import collection.immutable.ListSet
+import collection.mutable.{LinkedHashSet, LinkedList, MutableList}
 
 /**
  * Created by IntelliJ IDEA.
@@ -71,23 +73,40 @@ class BeanUtilsTest extends FunSuite{
     assert(bean.set.foldLeft(0)((b,a) => b + a) == 10)
   }
 
-  test("Array"){
-    
-  }
-
   test("MutableList"){
-    val set = Set(1, 2, 3, 4)
+    val map = Map("list" -> List("1", "2", "3", "4", "4"))
+    val bean = BeanUtils.instantiate(classOf[MutableListBean], map).asInstanceOf[MutableListBean]
+    assert(bean != null)
+    assert(bean.list.size == 5)
+    assert(bean.list.foldLeft(0)((b,a) => b + a) == 14)
 
   }
 
-  test("LinkedList & other concrete mutables"){
+  test("Growable mutables"){
+    val map = Map("list" -> List("1", "2", "3", "4", "4"))
+    val bean = BeanUtils.instantiate(classOf[GrowableSetOrListBean], map).asInstanceOf[GrowableSetOrListBean]
+    assert(bean != null)
+    assert(bean.list.size == 4)
+    assert(bean.list.foldLeft(0)((b,a) => b + a) == 10)
+  }
+
+  test("mutable LinkedList (not a Growable)"){
+    val map = Map("list" -> List("1", "2", "3", "4", "4"))
+    val bean = BeanUtils.instantiate(classOf[LinkedListBean], map).asInstanceOf[LinkedListBean]
+    assert(bean != null)
+    assert(bean.list.size == 5)
+    assert(bean.list.foldLeft(0)((b,a) => b + a) == 14)
 
   }
 
-  test("ListSet & other concrete mutable"){
+  test("ListSet"){
+    val map = Map("list" -> List("1", "2", "3", "4", "4"))
+    val bean = BeanUtils.instantiate(classOf[ListSetBean], map).asInstanceOf[ListSetBean]
+    assert(bean != null)
+    assert(bean.list.size == 4)
+    assert(bean.list.foldLeft(0)((b,a) => b + a) == 10)
     
   }
-
 
   test("java.util.Set"){
 
@@ -108,6 +127,15 @@ class BeanUtilsTest extends FunSuite{
 
 
 }
+
+case class LinkedListBean(list: LinkedList[Int])
+
+case class GrowableSetOrListBean(list: LinkedHashSet[Int])
+
+case class ListSetBean(list: ListSet[Int])
+
+
+case class MutableListBean(list: MutableList[Int])
 
 case class SetBean(set: Set[Int])
 

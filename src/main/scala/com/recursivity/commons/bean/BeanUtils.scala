@@ -1,9 +1,10 @@
 package com.recursivity.commons.bean
 
-import collection.mutable.MutableList
-import collection.immutable.LinearSeq
-import collection.TraversableLike
 import java.lang.reflect.{TypeVariable, ParameterizedType}
+import collection.immutable._
+import collection.generic.Growable
+import collection.{SeqLike, TraversableLike}
+import collection.mutable.{DoubleLinkedList, LinkedList, Builder, MutableList}
 
 /**
  * Created by IntelliJ IDEA.
@@ -64,10 +65,11 @@ object BeanUtils {
       val field = cls.getDeclaredField(key)
       val fieldCls = getClassForJavaPrimitive(field.getType)
       field.setAccessible(true)
-      if(classOf[ParameterizedType].isAssignableFrom(field.getGenericType.getClass)){
+      println(fieldCls.getName)
+      if (classOf[ParameterizedType].isAssignableFrom(field.getGenericType.getClass) || fieldCls.equals(classOf[Array[_]])) {
         val parameterized = field.getGenericType.asInstanceOf[ParameterizedType]
         field.set(bean, resolveGenerifiedValue(fieldCls, GenericsParser.parseDefinition(parameterized), value))
-      }else{
+      } else {
         val transformer = TransformerRegistry.resolveTransformer(fieldCls)
         field.set(bean, transformer.toValue(value.toString))
       }
@@ -84,37 +86,66 @@ object BeanUtils {
     if (classOf[TraversableLike[_ <: Any, _ <: Any]].isAssignableFrom(cls)) { // temporary workaround, collection types not yet supported
       val c = Class.forName(genericType.genericTypes.get.head.clazz)
       val transformer = TransformerRegistry.resolveTransformer(c)
-      if(cls.equals(classOf[List[_]]) || cls.equals(classOf[Array[_]]) || cls.equals(classOf[Set[_]])){
-        val list = new MutableList[Any]
-        if(input.isInstanceOf[List[_]]){
-          val l = input.asInstanceOf[List[_]]
-          l.foreach(f => list += transformer.toValue(f.toString))
-        }else if(input.isInstanceOf[Array[_]]){
-          val array = input.asInstanceOf[Array[_]]
-          array.foreach(f => list += transformer.toValue(f.toString))
-        }
-        if(cls.equals(classOf[List[_]]))
-          return list.toList
-        else if(cls.equals(classOf[Set[_]]))
-          return list.toSet
-        else if(cls.equals(cls.equals(classOf[Array[_]])))
-          return list.toArray
+      val list = new MutableList[Any]
+      if (input.isInstanceOf[List[_]]) {
+        val l = input.asInstanceOf[List[_]]
+        l.foreach(f => list += transformer.toValue(f.toString))
+      } else if (input.isInstanceOf[Array[_]]) {
+        val array = input.asInstanceOf[Array[_]]
+        array.foreach(f => list += transformer.toValue(f.toString))
       }
-      return null
+      return resolveTraversableOrArray(cls, list)
+
     } else if (classOf[java.util.Collection[_ <: Any]].isAssignableFrom(cls)) {
       return null
     } else if (classOf[Option[_ <: Any]].isAssignableFrom(cls)) {
       val c = Class.forName(genericType.genericTypes.get.head.clazz)
-      if(genericType.genericTypes.get.head.genericTypes.equals(None)){
+      if (genericType.genericTypes.get.head.genericTypes.equals(None)) {
         val transformer = TransformerRegistry.resolveTransformer(c)
         return Some(transformer.toValue(input.toString))
-      }else{
+      } else {
         val t = genericType.genericTypes.get.head
         val targetCls = Class.forName(t.clazz)
         return Some(resolveGenerifiedValue(targetCls, t, input))
       }
     } else {
       return null
+    }
+  }
+
+  // due to the trickiness of supporting immutable sets/lists, types are hard coded here with no support for extension
+  // of immutable Scala Sets/Lists, TreeSet is not supported
+  //
+  private def resolveTraversableOrArray(cls: Class[_], list: MutableList[_]): Any = {
+    if (cls.equals(classOf[List[_]])){
+      return list.toList 
+    }else if (cls.equals(classOf[Set[_]]))
+      return list.toSet
+    else if (cls.equals(classOf[Array[_]]))
+      return list.toArray
+    else if (cls.equals(classOf[ListSet[_]]))
+      return new ListSet ++ list.toList
+    else if (cls.equals(classOf[HashSet[_]]))
+      return new HashSet ++ list.toList
+    else{
+      val listOrSet = cls.newInstance
+      if(classOf[Builder[Any, Any]].isAssignableFrom(cls)){
+        val builder = listOrSet.asInstanceOf[Builder[Any,Any]]
+        list.foreach(b => builder += b)
+        return builder
+      }else if(classOf[LinkedList[_]].isAssignableFrom(cls)){
+        var seq = listOrSet.asInstanceOf[LinkedList[_]]
+        list.foreach(elem => {
+          seq = seq :+ elem
+        })
+        return seq
+      }else if(classOf[DoubleLinkedList[_]].isAssignableFrom(cls)){
+        var seq = listOrSet.asInstanceOf[DoubleLinkedList[_]]
+        list.foreach(elem => {
+          seq = seq :+ elem
+        })
+        return seq
+      }
     }
   }
 
