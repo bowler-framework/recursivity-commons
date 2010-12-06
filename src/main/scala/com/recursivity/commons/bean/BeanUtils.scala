@@ -15,7 +15,7 @@ import collection.mutable.{DoubleLinkedList, LinkedList, Builder, MutableList}
  */
 
 object BeanUtils {
-  def instantiate(cls: Class[_]): Any = {
+  def instantiate[T](cls: Class[_]): T = {
     val cons = cls.getConstructors.head
     val list = new MutableList[AnyRef]
     cons.getParameterTypes.foreach(cls => {
@@ -57,7 +57,7 @@ object BeanUtils {
 
       }
     })
-    return cons.newInstance(list.toArray: _*)
+    return cons.newInstance(list.toArray: _*).asInstanceOf[T]
   }
 
   def setProperty(cls: Class[_], bean: Any, key: String, value: Any) {
@@ -84,20 +84,12 @@ object BeanUtils {
   def resolveGenerifiedValue(cls: Class[_], genericType: GenericTypeDefinition, input: Any): Any = {
 
     if (classOf[TraversableLike[_ <: Any, _ <: Any]].isAssignableFrom(cls)) { // temporary workaround, collection types not yet supported
-      val c = Class.forName(genericType.genericTypes.get.head.clazz)
-      val transformer = TransformerRegistry.resolveTransformer(c)
-      val list = new MutableList[Any]
-      if (input.isInstanceOf[List[_]]) {
-        val l = input.asInstanceOf[List[_]]
-        l.foreach(f => list += transformer.toValue(f.toString))
-      } else if (input.isInstanceOf[Array[_]]) {
-        val array = input.asInstanceOf[Array[_]]
-        array.foreach(f => list += transformer.toValue(f.toString))
-      }
+      val list = valueList(cls, genericType, input)
       return resolveTraversableOrArray(cls, list)
 
     } else if (classOf[java.util.Collection[_ <: Any]].isAssignableFrom(cls)) {
-      return null
+      val list = valueList(cls, genericType, input)
+      return resolveJavaCollectionType(cls, list)
     } else if (classOf[Option[_ <: Any]].isAssignableFrom(cls)) {
       val c = Class.forName(genericType.genericTypes.get.head.clazz)
       if (genericType.genericTypes.get.head.genericTypes.equals(None)) {
@@ -113,13 +105,31 @@ object BeanUtils {
     }
   }
 
+  private def resolveJavaCollectionType(cls: Class[_], list: MutableList[_]): Any = {
+    return null
+  }
+
+  private def valueList(cls: Class[_], genericType: GenericTypeDefinition, input: Any): MutableList[Any] = {
+    val c = Class.forName(genericType.genericTypes.get.head.clazz)
+    val transformer = TransformerRegistry.resolveTransformer(c)
+    val list = new MutableList[Any]
+    if (input.isInstanceOf[List[_]]) {
+      val l = input.asInstanceOf[List[_]]
+      l.foreach(f => list += transformer.toValue(f.toString))
+    } else if (input.isInstanceOf[Array[_]]) {
+      val array = input.asInstanceOf[Array[_]]
+      array.foreach(f => list += transformer.toValue(f.toString))
+    }
+    return list
+  }
+
   // due to the trickiness of supporting immutable sets/lists, types are hard coded here with no support for extension
   // of immutable Scala Sets/Lists, TreeSet is not supported
   //
   private def resolveTraversableOrArray(cls: Class[_], list: MutableList[_]): Any = {
-    if (cls.equals(classOf[List[_]])){
-      return list.toList 
-    }else if (cls.equals(classOf[Set[_]]))
+    if (cls.equals(classOf[List[_]])) {
+      return list.toList
+    } else if (cls.equals(classOf[Set[_]]))
       return list.toSet
     else if (cls.equals(classOf[Array[_]]))
       return list.toArray
@@ -127,19 +137,19 @@ object BeanUtils {
       return new ListSet ++ list.toList
     else if (cls.equals(classOf[HashSet[_]]))
       return new HashSet ++ list.toList
-    else{
+    else {
       val listOrSet = cls.newInstance
-      if(classOf[Builder[Any, Any]].isAssignableFrom(cls)){
-        val builder = listOrSet.asInstanceOf[Builder[Any,Any]]
+      if (classOf[Builder[Any, Any]].isAssignableFrom(cls)) {
+        val builder = listOrSet.asInstanceOf[Builder[Any, Any]]
         list.foreach(b => builder += b)
         return builder
-      }else if(classOf[LinkedList[_]].isAssignableFrom(cls)){
+      } else if (classOf[LinkedList[_]].isAssignableFrom(cls)) {
         var seq = listOrSet.asInstanceOf[LinkedList[_]]
         list.foreach(elem => {
           seq = seq :+ elem
         })
         return seq
-      }else if(classOf[DoubleLinkedList[_]].isAssignableFrom(cls)){
+      } else if (classOf[DoubleLinkedList[_]].isAssignableFrom(cls)) {
         var seq = listOrSet.asInstanceOf[DoubleLinkedList[_]]
         list.foreach(elem => {
           seq = seq :+ elem
@@ -149,8 +159,8 @@ object BeanUtils {
     }
   }
 
-  def instantiate(cls: Class[_], properties: Map[String, Any]): Any = {
-    val bean = instantiate(cls)
+  def instantiate[T](cls: Class[_], properties: Map[String, Any]): T = {
+    val bean = instantiate[T](cls)
 
     properties.keys.foreach(key => {
       setProperty(cls, bean, key, properties(key))

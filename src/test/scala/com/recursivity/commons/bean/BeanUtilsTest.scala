@@ -15,7 +15,7 @@ import collection.mutable.{LinkedHashSet, LinkedList, MutableList}
 class BeanUtilsTest extends FunSuite{
 
   test("instantiate case-class"){
-    val bean = BeanUtils.instantiate(classOf[TestBean]).asInstanceOf[TestBean]
+    val bean = BeanUtils.instantiate[TestBean](classOf[TestBean])
     assert(bean != null)
     assert(bean.isInstanceOf[TestBean])
     assert(bean.option == None)
@@ -26,7 +26,7 @@ class BeanUtilsTest extends FunSuite{
     val map = Map("nonexistent" -> "hello", "name" -> "wille", "long" -> "1", "int" -> "1","short" -> "2","double" -> "3","float" -> "4",
       "bool" -> "true","decimal" -> "3.14","option" -> "someOption","list" -> List("1.12", "2.1", "3.14").toArray)
 
-    val bean = BeanUtils.instantiate(classOf[TestBean], map).asInstanceOf[TestBean]
+    val bean = BeanUtils.instantiate[TestBean](classOf[TestBean], map)
 
     assert(bean.name == "wille")
     assert(bean.long == 1L)
@@ -45,7 +45,7 @@ class BeanUtilsTest extends FunSuite{
 
   test("option with list"){
     val map = Map("list" -> List("1", "2", "3", "4", "5"))
-    val bean = BeanUtils.instantiate(classOf[NestedGenerics], map).asInstanceOf[NestedGenerics]
+    val bean = BeanUtils.instantiate[NestedGenerics](classOf[NestedGenerics], map)
     assert(bean != null)
     val list = bean.list.get
     assert(list != null)
@@ -60,14 +60,14 @@ class BeanUtilsTest extends FunSuite{
 
   test("Option type with primitive reflected generic type"){
     val map = Map("num" -> "true")
-    val bean = BeanUtils.instantiate(classOf[PrimitiveOption], map).asInstanceOf[PrimitiveOption]
+    val bean = BeanUtils.instantiate[PrimitiveOption](classOf[PrimitiveOption], map)
     assert(bean != null)
     assert(bean.num.equals(Some(true)))
   }
 
   test("Set"){
     val map = Map("set" -> List("1", "2", "3", "4", "4"))
-    val bean = BeanUtils.instantiate(classOf[SetBean], map).asInstanceOf[SetBean]
+    val bean = BeanUtils.instantiate[SetBean](classOf[SetBean], map)
     assert(bean != null)
     assert(bean.set.size == 4)
     assert(bean.set.foldLeft(0)((b,a) => b + a) == 10)
@@ -75,7 +75,7 @@ class BeanUtilsTest extends FunSuite{
 
   test("MutableList"){
     val map = Map("list" -> List("1", "2", "3", "4", "4"))
-    val bean = BeanUtils.instantiate(classOf[MutableListBean], map).asInstanceOf[MutableListBean]
+    val bean = BeanUtils.instantiate[MutableListBean](classOf[MutableListBean], map)
     assert(bean != null)
     assert(bean.list.size == 5)
     assert(bean.list.foldLeft(0)((b,a) => b + a) == 14)
@@ -84,7 +84,7 @@ class BeanUtilsTest extends FunSuite{
 
   test("Growable mutables"){
     val map = Map("list" -> List("1", "2", "3", "4", "4"))
-    val bean = BeanUtils.instantiate(classOf[GrowableSetOrListBean], map).asInstanceOf[GrowableSetOrListBean]
+    val bean = BeanUtils.instantiate[GrowableSetOrListBean](classOf[GrowableSetOrListBean], map)
     assert(bean != null)
     assert(bean.list.size == 4)
     assert(bean.list.foldLeft(0)((b,a) => b + a) == 10)
@@ -92,7 +92,7 @@ class BeanUtilsTest extends FunSuite{
 
   test("mutable LinkedList (not a Growable)"){
     val map = Map("list" -> List("1", "2", "3", "4", "4"))
-    val bean = BeanUtils.instantiate(classOf[LinkedListBean], map).asInstanceOf[LinkedListBean]
+    val bean = BeanUtils.instantiate[LinkedListBean](classOf[LinkedListBean], map)
     assert(bean != null)
     assert(bean.list.size == 5)
     assert(bean.list.foldLeft(0)((b,a) => b + a) == 14)
@@ -101,7 +101,7 @@ class BeanUtilsTest extends FunSuite{
 
   test("ListSet"){
     val map = Map("list" -> List("1", "2", "3", "4", "4"))
-    val bean = BeanUtils.instantiate(classOf[ListSetBean], map).asInstanceOf[ListSetBean]
+    val bean = BeanUtils.instantiate[ListSetBean](classOf[ListSetBean], map)
     assert(bean != null)
     assert(bean.list.size == 4)
     assert(bean.list.foldLeft(0)((b,a) => b + a) == 10)
