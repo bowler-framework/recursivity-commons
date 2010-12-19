@@ -19,12 +19,22 @@ class ClasspathTextResourceTest extends FunSuite{
   }
 
   test("resolve internationalised"){
-    val res = new ClasspathTextResource(this.getClass, ".txt", "se")
+    val res = new ClasspathTextResource(this.getClass, ".txt", List("se"))
     assert("Hej pa dig!" == res.load)
   }
 
   test("resolve internationalised, fallback to default"){
-    val res = new ClasspathTextResource(this.getClass, ".txt", "es")
+    val res = new ClasspathTextResource(this.getClass, ".txt", List("es"))
+    assert("Howdy partner!" == res.load)
+  }
+
+  test("resolve internationalised, fallback to second choice"){
+    val res = new ClasspathTextResource(this.getClass, ".txt", List("fi", "se"))
+    assert("Hej pa dig!" == res.load)
+  }
+
+  test("resolve multiple localized, fallback to default"){
+     val res = new ClasspathTextResource(this.getClass, ".txt", List("fi", "es"))
     assert("Howdy partner!" == res.load)
   }
 

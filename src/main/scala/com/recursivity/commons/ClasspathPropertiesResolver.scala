@@ -12,52 +12,30 @@ import collection.mutable.HashMap
  */
 
 object ClasspathPropertiesResolver {
-  val contexts = new HashMap[String, HashMap[String, Properties]]
 
-  def getProperties(context: Class[_], locale: String): Properties = {
-    var map: HashMap[String, Properties] = null
-    try {
-      map = contexts(context.getName)
-    } catch {
-      case e: NoSuchElementException => {
-        map = new HashMap[String, Properties]
-        contexts += context.getName -> map
-        loadProperties(context, null)
-      }
-    }
+  def getProperties(context: Class[_], locale: List[String] = List()): Properties = {
     var properties: Properties = null
-    if (locale == null) {
-      properties = map("default")
-    }else{
+    if (locale == Nil) {
+      properties = loadProperties(context)
+    } else {
       try {
-        properties = map(locale)
+        properties = loadProperties(context, locale.head)
       } catch {
-        case e: NoSuchElementException => {
-          properties = loadProperties(context, locale)
+        case ex: NullPointerException => {
+          val localeList = locale.drop(1)
+          properties = getProperties(context, localeList)
         }
       }
     }
+
     return properties
   }
 
-  private def loadProperties(context: Class[_], locale: String): Properties = {
-    var map = contexts(context.getName)
-
+  private def loadProperties(context: Class[_], locale: String = null): Properties = {
     var properties = new Properties
-    try {
-      ClasspathResourceResolver.getAbsoluteResource(context, ".properties", locale){
-        is => properties.load(is)
-      }      
-    } catch {
-      case e: NullPointerException => {
-        if (locale != null)
-          properties = map("default")
-        else
-          throw new NullPointerException("No Validator message properties file found in classpath for context: " + context.getName + " _" + locale)
-      }
+    ClasspathResourceResolver.getAbsoluteResource(context, ".properties", locale) {
+      is => properties.load(is)
     }
-    if (locale == null) map += "default" -> properties
-    else map += locale -> properties
 
     return properties
   }

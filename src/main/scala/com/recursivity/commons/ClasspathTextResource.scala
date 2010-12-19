@@ -8,6 +8,6 @@ package com.recursivity.commons
  * To change this template use File | Settings | File Templates.
  */
 
-class ClasspathTextResource(context: Class[_], fileType: String, locale: String = null) extends TextResource with StringInputStreamReader{
+class ClasspathTextResource(context: Class[_], fileType: String, locale: List[String] = List()) extends TextResource with StringInputStreamReader{
   def load = ClasspathResourceResolver.resolveResource(context, fileType, locale){ is => this.load(is)}.asInstanceOf[String]
 }

@@ -13,7 +13,7 @@ import com.recursivity.commons.ClasspathPropertiesResolver
  * To change this template use File | Settings | File Templates.
  */
 
-class ClasspathMessageResolver(context: Class[_], locale: String = null) extends MessageResolver {
+class ClasspathMessageResolver(context: Class[_], locale: List[String] = List()) extends MessageResolver {
   def resolveMessage(validator: Validator): String = {
     val properties = ClasspathPropertiesResolver.getProperties(context, locale)
     var message = properties.get(validator.getClass.getSimpleName).toString

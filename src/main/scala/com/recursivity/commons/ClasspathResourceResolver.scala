@@ -46,19 +46,21 @@ object ClasspathResourceResolver {
   /**
    * get potentially localised file, fallback to default if not present
    */
-  def resolveResource(context: Class[_], fileType: String, locale: String = null)(op: InputStream => Any) = {
-    if (locale == null)
-      getAbsoluteResource(context, fileType, locale) {is => op(is)}
+  def resolveResource(context: Class[_], fileType: String, locale: List[String] = List())(op: InputStream => Any): Any = {
+    if (locale == Nil)
+      getAbsoluteResource(context, fileType, null) {is => op(is)}
     else {
       try {
-        getAbsoluteResource(context, fileType, locale) {is => op(is)}
+        getAbsoluteResource(context, fileType, locale.head) {is => op(is)}
       } catch {
         case e: NullPointerException => {
-          getAbsoluteResource(context, fileType, null) {is => op(is)}
+          val localeList = locale.drop(1)
+          resolveResource(context, fileType, localeList) {is => op(is)}
         }
       }
     }
   }
+
 
 }
 
