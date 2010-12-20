@@ -69,7 +69,7 @@ object BeanUtils {
         field.set(bean, resolveGenerifiedValue(fieldCls, GenericsParser.parseDefinition(parameterized), value))
       } else {
         val transformer = TransformerRegistry.resolveTransformer(fieldCls)
-        field.set(bean, transformer.toValue(value.toString))
+        field.set(bean, transformer.getOrElse(throw new BeanTransformationException(fieldCls)).toValue(value.toString))
       }
     } catch {
       case e: NoSuchFieldException => {
@@ -91,7 +91,7 @@ object BeanUtils {
       val c = Class.forName(genericType.genericTypes.get.head.clazz)
       if (genericType.genericTypes.get.head.genericTypes.equals(None)) {
         val transformer = TransformerRegistry.resolveTransformer(c)
-        return Some(transformer.toValue(input.toString))
+        return Some(transformer.getOrElse(throw new BeanTransformationException(c)).toValue(input.toString))
       } else {
         val t = genericType.genericTypes.get.head
         val targetCls = Class.forName(t.clazz)
@@ -130,10 +130,10 @@ object BeanUtils {
     val list = new MutableList[Any]
     if (input.isInstanceOf[List[_]]) {
       val l = input.asInstanceOf[List[_]]
-      l.foreach(f => list += transformer.toValue(f.toString))
+      l.foreach(f => list += transformer.getOrElse(throw new BeanTransformationException(c)).toValue(f.toString))
     } else if (input.isInstanceOf[Array[_]]) {
       val array = input.asInstanceOf[Array[_]]
-      array.foreach(f => list += transformer.toValue(f.toString))
+      array.foreach(f => list += transformer.getOrElse(throw new BeanTransformationException(c)).toValue(f.toString))
     }
     return list
   }

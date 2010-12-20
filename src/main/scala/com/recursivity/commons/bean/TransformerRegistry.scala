@@ -29,10 +29,10 @@ object TransformerRegistry{
 
 
 
-  def resolveTransformer(clazz: Class[_]): StringValueTransformer = {
+  def resolveTransformer(clazz: Class[_]): Option[StringValueTransformer] = {
     if(registry(clazz) != null)
-      return registry(clazz).newInstance
-    return null
+      return Some(registry(clazz).newInstance)
+    return None
   }
 
   def registerTransformer(clazz: Class[_], transformerClass: Class[_<: StringValueTransformer]){

@@ -17,15 +17,15 @@ class TransformerRegistryTest extends FunSuite {
 
 
   test("RegistryKeys") {
-    assert(classOf[BigDecimalTransformer].equals(TransformerRegistry.resolveTransformer(classOf[BigDecimal]).getClass))
-    assert(classOf[JavaBooleanTransformer].equals(TransformerRegistry.resolveTransformer(classOf[Boolean]).getClass))
-    assert(classOf[DateTransformer].equals(TransformerRegistry.resolveTransformer(classOf[java.util.Date]).getClass))
-    assert(classOf[JavaBigDecimalTransformer].equals(TransformerRegistry.resolveTransformer(classOf[java.math.BigDecimal]).getClass))
-    assert(classOf[JavaBooleanTransformer].equals(TransformerRegistry.resolveTransformer(classOf[java.lang.Boolean]).getClass))
-    assert(classOf[JavaIntegerTransformer].equals(TransformerRegistry.resolveTransformer(classOf[java.lang.Integer]).getClass))
-    assert(classOf[LongTransformer].equals(TransformerRegistry.resolveTransformer(classOf[java.lang.Long]).getClass))
-    assert(classOf[LongTransformer].equals(TransformerRegistry.resolveTransformer(classOf[Long]).getClass))
-    assert(classOf[StringTransformer].equals(TransformerRegistry.resolveTransformer(classOf[String]).getClass))
+    assert(classOf[BigDecimalTransformer].equals(TransformerRegistry.resolveTransformer(classOf[BigDecimal]).get.getClass))
+    assert(classOf[JavaBooleanTransformer].equals(TransformerRegistry.resolveTransformer(classOf[Boolean]).get.getClass))
+    assert(classOf[DateTransformer].equals(TransformerRegistry.resolveTransformer(classOf[java.util.Date]).get.getClass))
+    assert(classOf[JavaBigDecimalTransformer].equals(TransformerRegistry.resolveTransformer(classOf[java.math.BigDecimal]).get.getClass))
+    assert(classOf[JavaBooleanTransformer].equals(TransformerRegistry.resolveTransformer(classOf[java.lang.Boolean]).get.getClass))
+    assert(classOf[JavaIntegerTransformer].equals(TransformerRegistry.resolveTransformer(classOf[java.lang.Integer]).get.getClass))
+    assert(classOf[LongTransformer].equals(TransformerRegistry.resolveTransformer(classOf[java.lang.Long]).get.getClass))
+    assert(classOf[LongTransformer].equals(TransformerRegistry.resolveTransformer(classOf[Long]).get.getClass))
+    assert(classOf[StringTransformer].equals(TransformerRegistry.resolveTransformer(classOf[String]).get.getClass))
 
   }
 
