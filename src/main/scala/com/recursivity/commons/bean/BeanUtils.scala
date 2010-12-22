@@ -179,12 +179,12 @@ object BeanUtils {
   def instantiate[T](cls: Class[_], properties: Map[String, Any]): T = {
     val bean = instantiate[T](cls)
 
-    return setProperties[T](cls, bean, properties)
+    return setProperties[T](bean, properties)
   }
 
-  def setProperties[T](cls: Class[_], bean: T, properties: Map[String, Any]): T = {
+  def setProperties[T](bean: T, properties: Map[String, Any]): T = {
     properties.keys.foreach(key => {
-      setProperty(cls, bean, key, properties(key))
+      setProperty(bean.asInstanceOf[AnyRef].getClass, bean, key, properties(key))
     })
 
     return bean
