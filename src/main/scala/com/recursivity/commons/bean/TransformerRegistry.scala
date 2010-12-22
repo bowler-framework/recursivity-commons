@@ -30,9 +30,11 @@ object TransformerRegistry{
 
 
   def resolveTransformer(clazz: Class[_]): Option[StringValueTransformer] = {
-    if(registry(clazz) != null)
+    try{
       return Some(registry(clazz).newInstance)
-    return None
+    }catch{
+      case e: NoSuchElementException => return None
+    }
   }
 
   def registerTransformer(clazz: Class[_], transformerClass: Class[_<: StringValueTransformer]){
