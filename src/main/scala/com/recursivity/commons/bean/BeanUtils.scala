@@ -152,6 +152,8 @@ object BeanUtils {
       return new ListSet ++ list.toList
     else if (cls.equals(classOf[HashSet[_]]))
       return new HashSet ++ list.toList
+    else if(classOf[Seq[_]].isAssignableFrom(cls))
+      return list.toList
     else {
       val listOrSet = cls.newInstance
       if (classOf[Builder[Any, Any]].isAssignableFrom(cls)) {
@@ -177,6 +179,10 @@ object BeanUtils {
   def instantiate[T](cls: Class[_], properties: Map[String, Any]): T = {
     val bean = instantiate[T](cls)
 
+    return setProperties[T](cls, bean, properties)
+  }
+
+  def setProperties[T](cls: Class[_], bean: T, properties: Map[String, Any]): T = {
     properties.keys.foreach(key => {
       setProperty(cls, bean, key, properties(key))
     })
