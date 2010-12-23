@@ -37,6 +37,7 @@ object GenericsParser extends RegexParsers {
 
   def parseDefinition(cls: ParameterizedType): GenericTypeDefinition = parseDefinition(cls.toString)
 
+
   def parseDefinition(cls: String): GenericTypeDefinition = {
     parse(clazz, cls) match {
       case Success(definition, _) => return definition
@@ -47,4 +48,22 @@ object GenericsParser extends RegexParsers {
 
 }
 
-case class GenericTypeDefinition(clazz: String, genericTypes: Option[List[GenericTypeDefinition]])
+case class GenericTypeDefinition(clazz: String, genericTypes: Option[List[GenericTypeDefinition]]){
+  def toSimpleString: String = {
+    var simpleName: String = clazz
+    if(clazz.contains("."))
+      simpleName = clazz.substring(clazz.lastIndexOf(".") + 1)
+    if(genericTypes != None){
+      simpleName = simpleName + "["
+      var first = true
+      genericTypes.get.foreach(b => {
+        if(!first)
+          simpleName = simpleName + ","
+        simpleName = simpleName + b.toSimpleString
+        first = false
+      })
+      simpleName = simpleName + "]"
+    }
+    return simpleName
+  }
+}

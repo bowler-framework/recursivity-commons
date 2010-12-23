@@ -27,8 +27,6 @@ object TransformerRegistry{
   registry += classOf[java.lang.Short] -> classOf[ShortTransformer]
 
 
-
-
   def resolveTransformer(clazz: Class[_]): Option[StringValueTransformer] = {
     try{
       return Some(registry(clazz).newInstance)
