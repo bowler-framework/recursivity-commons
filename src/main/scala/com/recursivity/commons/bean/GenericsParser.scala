@@ -18,36 +18,22 @@ object GenericsParser extends RegexParsers {
 
   def clazz: Parser[GenericTypeDefinition] = className ~ opt(genericType) ^^ {case s ~ n => GenericTypeDefinition(s, n)}
 
-  // this is a bit messy, must be a cleaner way to deal with Product
   def genericType  = "<" ~ (paramList | clazz) ^^ {
-    case s ~ n => {
-      val list = new MutableList[GenericTypeDefinition]
-      n.asInstanceOf[Product].productIterator.foreach(el => {
-        if(el.isInstanceOf[GenericTypeDefinition]){
-          list += el.asInstanceOf[GenericTypeDefinition]
-        }else if(classOf[Product].isAssignableFrom(el.asInstanceOf[AnyRef].getClass)){
-          el.asInstanceOf[Product].productIterator.foreach(pi => if(pi.isInstanceOf[GenericTypeDefinition]){
-            list += pi.asInstanceOf[GenericTypeDefinition]
-          })
+    case s ~ (p: Product) => {
+      def collect(list: MutableList[GenericTypeDefinition], p: Product): MutableList[GenericTypeDefinition] =
+        (list /: p.productIterator) {
+          case (l, el: GenericTypeDefinition) => l += el
+          case (l, p: Product)                => collect(l, p)
+          case (l,_)                          => l
         }
-      })
-      list.toList
+      collect(new MutableList[GenericTypeDefinition], p).toList
     }
   }
 
   def paramList: Parser[List[GenericTypeDefinition]] = repsep(clazz, ",") ^^ {case (ts: List[GenericTypeDefinition]) => ts}
 
 
-  def className: Parser[String] = repsep(ID, ".") ^^ {
-    case (ts: List[String]) => {
-      ts.foldLeft[String]("")((b, a) => {
-        if (b.equals(""))
-          b + a
-        else
-          b + "." + a
-      })
-    }
-  }
+  def className: Parser[String] = repsep(ID, ".") ^^ { case (ts: List[String]) => ts mkString "." }
 
   def parseDefinition(cls: ParameterizedType): GenericTypeDefinition = parseDefinition(cls.toString)
 
