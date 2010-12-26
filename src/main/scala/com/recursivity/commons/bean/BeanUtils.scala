@@ -80,12 +80,12 @@ object BeanUtils {
   }
 
   private def resolveGenerifiedValue(cls: Class[_], genericType: GenericTypeDefinition, input: Any): Any = {
-    if (classOf[TraversableLike[_ <: Any, _ <: Any]].isAssignableFrom(cls)) { // temporary workaround, collection types not yet supported
-      val list = valueList(cls, genericType, input)
+    if (classOf[TraversableLike[_ <: Any, _ <: Any]].isAssignableFrom(cls)) {
+      val list = valueList(genericType, input)
       return resolveTraversableOrArray(cls, list)
 
     } else if (classOf[java.util.Collection[_ <: Any]].isAssignableFrom(cls)) {
-      val list = valueList(cls, genericType, input)
+      val list = valueList(genericType, input)
       return resolveJavaCollectionType(cls, list)
     } else if (classOf[Option[_ <: Any]].isAssignableFrom(cls)) {
       val c = Class.forName(genericType.genericTypes.get.head.clazz)
@@ -102,7 +102,7 @@ object BeanUtils {
     }
   }
 
-  private def resolveJavaCollectionType(cls: Class[_], list: MutableList[_]): Any = {
+  def resolveJavaCollectionType(cls: Class[_], list: MutableList[_]): Any = {
     if(classOf[java.util.Set[_]].isAssignableFrom(cls)){
       var set: java.util.Set[Any] = null
       try{
@@ -124,7 +124,7 @@ object BeanUtils {
     }
   }
 
-  private def valueList(cls: Class[_], genericType: GenericTypeDefinition, input: Any): MutableList[Any] = {
+  def valueList(genericType: GenericTypeDefinition, input: Any): MutableList[Any] = {
     val c = Class.forName(genericType.genericTypes.get.head.clazz)
     val transformer = TransformerRegistry.resolveTransformer(c)
     val list = new MutableList[Any]
@@ -141,7 +141,7 @@ object BeanUtils {
   // due to the trickiness of supporting immutable sets/lists, types are hard coded here with no support for extension
   // of immutable Scala Sets/Lists, TreeSet is not supported
   //
-  private def resolveTraversableOrArray(cls: Class[_], list: MutableList[_]): Any = {
+  def resolveTraversableOrArray(cls: Class[_], list: MutableList[_]): Any = {
     if (cls.equals(classOf[List[_]])) {
       return list.toList
     } else if (cls.equals(classOf[Set[_]]))
