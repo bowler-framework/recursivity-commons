@@ -124,7 +124,7 @@ object BeanUtils {
     }
   }
 
-  def valueList(genericType: GenericTypeDefinition, input: Any): MutableList[Any] = {
+  private def valueList(genericType: GenericTypeDefinition, input: Any): MutableList[Any] = {
     val c = Class.forName(genericType.genericTypes.get.head.clazz)
     val transformer = TransformerRegistry.resolveTransformer(c)
     val list = new MutableList[Any]
