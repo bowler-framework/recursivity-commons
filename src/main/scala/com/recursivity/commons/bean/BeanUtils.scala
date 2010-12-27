@@ -151,7 +151,7 @@ object BeanUtils {
       return new ListSet ++ list.toList
     else if (cls.equals(classOf[HashSet[_]]))
       return new HashSet ++ list.toList
-    else if (cls.equals(classOf[scala.collection.Seq[_]])) {
+    else if (cls.equals(classOf[scala.collection.Seq[_]]) || cls.equals(classOf[Seq[_]])) {
       return list.toList
     }else {
       val listOrSet = cls.newInstance
