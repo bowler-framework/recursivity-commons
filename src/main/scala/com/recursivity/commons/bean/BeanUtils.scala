@@ -83,7 +83,6 @@ object BeanUtils {
     if (classOf[TraversableLike[_ <: Any, _ <: Any]].isAssignableFrom(cls)) {
       val list = valueList(genericType, input)
       return resolveTraversableOrArray(cls, list)
-
     } else if (classOf[java.util.Collection[_ <: Any]].isAssignableFrom(cls)) {
       val list = valueList(genericType, input)
       return resolveJavaCollectionType(cls, list)
@@ -152,9 +151,9 @@ object BeanUtils {
       return new ListSet ++ list.toList
     else if (cls.equals(classOf[HashSet[_]]))
       return new HashSet ++ list.toList
-    else if(classOf[Seq[_]].isAssignableFrom(cls))
+    else if (cls.equals(classOf[scala.collection.Seq[_]])) {
       return list.toList
-    else {
+    }else {
       val listOrSet = cls.newInstance
       if (classOf[Builder[Any, Any]].isAssignableFrom(cls)) {
         val builder = listOrSet.asInstanceOf[Builder[Any, Any]]
