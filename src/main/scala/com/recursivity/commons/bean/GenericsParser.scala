@@ -49,17 +49,20 @@ object GenericsParser extends RegexParsers {
 }
 
 case class GenericTypeDefinition(clazz: String, genericTypes: Option[List[GenericTypeDefinition]]){
-  def toSimpleString: String = {
+  def toSimpleString(lowerCaseInitial: Boolean = false): String = {
     var simpleName: String = clazz
-    if(clazz.contains("."))
+    if(clazz.contains(".")){
       simpleName = clazz.substring(clazz.lastIndexOf(".") + 1)
+      if(lowerCaseInitial)
+        simpleName = simpleName.substring(0,1).toLowerCase + simpleName.substring(1)
+    }
     if(genericTypes != None){
       simpleName = simpleName + "["
       var first = true
       genericTypes.get.foreach(b => {
         if(!first)
           simpleName = simpleName + ","
-        simpleName = simpleName + b.toSimpleString
+        simpleName = simpleName + b.toSimpleString(lowerCaseInitial)
         first = false
       })
       simpleName = simpleName + "]"

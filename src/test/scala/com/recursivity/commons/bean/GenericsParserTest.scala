@@ -63,7 +63,12 @@ class GenericsParserTest extends FunSuite{
 
   test("GenericTypeDef.toSimpleString"){
     val typeDef = GenericsParser.parseDefinition("scala.collection.immutable.List<scala.collection.immutable.Map<java.lang.String, java.lang.String>>")
-    assert(typeDef.toSimpleString.equals("List[Map[String,String]]"))
+    assert(typeDef.toSimpleString().equals("List[Map[String,String]]"))
+  }
+
+  test("GenericTypeDef.toSimpleString - lower case"){
+    val typeDef = GenericsParser.parseDefinition("scala.collection.immutable.List<scala.collection.immutable.Map<java.lang.String, java.lang.String>>")
+    assert(typeDef.toSimpleString(true).equals("list[map[string,string]]"))
   }
 
 
