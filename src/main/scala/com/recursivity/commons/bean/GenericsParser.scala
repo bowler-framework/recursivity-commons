@@ -53,9 +53,9 @@ case class GenericTypeDefinition(clazz: String, genericTypes: Option[List[Generi
     var simpleName: String = clazz
     if(clazz.contains(".")){
       simpleName = clazz.substring(clazz.lastIndexOf(".") + 1)
-      if(lowerCaseInitial)
-        simpleName = simpleName.substring(0,1).toLowerCase + simpleName.substring(1)
     }
+    if(lowerCaseInitial)
+      simpleName = simpleName.substring(0,1).toLowerCase + simpleName.substring(1)
     if(genericTypes != None){
       simpleName = simpleName + "["
       var first = true
