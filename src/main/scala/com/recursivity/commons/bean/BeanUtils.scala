@@ -75,7 +75,7 @@ object BeanUtils {
       case e: NoSuchFieldException => {
         if (cls.getSuperclass != null)
           setProperty(cls.getSuperclass, bean, key, value)
-      }
+      }case ie: IllegalArgumentException => {}// do nothing, do not set value with illegal argument
     }
   }
 
