@@ -10,7 +10,7 @@ import collection.mutable.HashMap
  */
 
 object TransformerRegistry{
-  private val registry = new HashMap[Class[_], Class[_ <: StringValueTransformer]]
+  private val registry = new HashMap[Class[_], Class[_ <: StringValueTransformer[_]]]
   registry += classOf[String] -> classOf[StringTransformer]
   registry += classOf[BigDecimal] -> classOf[BigDecimalTransformer]
   registry += classOf[Boolean] -> classOf[JavaBooleanTransformer]
@@ -27,7 +27,7 @@ object TransformerRegistry{
   registry += classOf[java.lang.Short] -> classOf[ShortTransformer]
 
 
-  def resolveTransformer(clazz: Class[_]): Option[StringValueTransformer] = {
+  def resolveTransformer(clazz: Class[_]): Option[StringValueTransformer[_]] = {
     try{
       return Some(registry(clazz).newInstance)
     }catch{
@@ -35,7 +35,7 @@ object TransformerRegistry{
     }
   }
 
-  def registerTransformer(clazz: Class[_], transformerClass: Class[_<: StringValueTransformer]){
+  def registerTransformer(clazz: Class[_], transformerClass: Class[_<: StringValueTransformer[_]]){
      registry += clazz -> transformerClass
   }
 }

@@ -32,7 +32,7 @@ class TransformerRegistryTest extends FunSuite {
   test("BigDecimalTransformer") {
     val transformer = new BigDecimalTransformer
     val decimal = new BigDecimal(new java.math.BigDecimal("14.51"))
-    assert(transformer.toValue("0000000000000014.51").equals(decimal))
+    assert(transformer.toValue("0000000000000014.51").get.equals(decimal))
 
   }
 
@@ -41,41 +41,56 @@ class TransformerRegistryTest extends FunSuite {
 
     val decimal = new java.math.BigDecimal("14.51")
 
-    assert(transformer.toValue("0000000000000014.51").equals(decimal))
+    assert(transformer.toValue("0000000000000014.51").get.equals(decimal))
   }
 
   test("LongTransformer") {
     val transformer = new LongTransformer
 
     val long : java.lang.Long = 431
-    assert(transformer.toValue("431").equals(long))
+    assert(transformer.toValue("431").get.equals(long))
   }
+
+  test("Long failure"){
+    val transformer = new LongTransformer
+    assert(transformer.toValue("4sdsf31").equals(None))
+  }
+
+
+
   test("NativeLongTransformer") {
     val transformer = new LongTransformer
 
     val long: Long = 432
-    assert(long.equals(transformer.toValue("432")))
+    assert(long.equals(transformer.toValue("432").get))
   }
 
 
   test("Java BooleanTransformer") {
     val transformer = new JavaBooleanTransformer
 
-    assert(true == transformer.toValue("true"))
+    assert(true == transformer.toValue("true").get)
 
-    assert(false == transformer.toValue("false"))
+    assert(false == transformer.toValue("false").get)
+
+    assert(None == transformer.toValue("blalbla"))
 
   }
 
   test("StringTransformer") {
     val transformer = new StringTransformer
-    assert("hello".equals(transformer.toValue("hello")))
+    assert("hello".equals(transformer.toValue("hello").get))
   }
 
 
   test("JavaIntegerTransformer") {
     val transformer = new JavaIntegerTransformer
-    assert(new java.lang.Integer(45).equals(transformer.toValue("0000000045")))
+    assert(new java.lang.Integer(45).equals(transformer.toValue("0000000045").get))
+  }
+
+  test("java integer with invald data"){
+    val transformer = new JavaIntegerTransformer
+    assert(None.equals(transformer.toValue("00000sdfsdf00045")))
   }
 
 

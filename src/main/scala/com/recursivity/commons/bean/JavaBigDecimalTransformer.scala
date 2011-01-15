@@ -8,7 +8,14 @@ package com.recursivity.commons.bean
  * To change this template use File | Settings | File Templates.
  */
 
-class JavaBigDecimalTransformer extends StringValueTransformer{
-  def toValue(from: String) = new java.math.BigDecimal(from)
+class JavaBigDecimalTransformer extends StringValueTransformer[java.math.BigDecimal]{
+  def toValue(from: String): Option[java.math.BigDecimal] = {
+    try{
+      return Some(new java.math.BigDecimal(from))
+    }catch{
+      case e: Exception => return None
+    }
+
+  }
 
 }

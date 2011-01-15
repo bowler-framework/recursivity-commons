@@ -10,10 +10,14 @@ import java.text.SimpleDateFormat
  * To change this template use File | Settings | File Templates.
  */
 
-class DateTransformer extends StringValueTransformer{
-  def toValue(from: String): AnyRef = {
-    val df = new SimpleDateFormat("yyyyyMMddHHmmssSSSZ")
-    return df.parse(from)
+class DateTransformer extends StringValueTransformer[java.util.Date]{
+  def toValue(from: String): Option[java.util.Date] = {
+    try{
+      val df = new SimpleDateFormat("yyyyyMMddHHmmssSSSZ")
+      return Some(df.parse(from))
+    }catch{
+      case e: Exception => return None
+    }
   }
 
 }

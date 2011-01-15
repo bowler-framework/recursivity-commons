@@ -8,7 +8,12 @@ package com.recursivity.commons.bean
  * To change this template use File | Settings | File Templates.
  */
 
-class FloatTransformer extends StringValueTransformer{
-  def toValue(from: String) = new java.lang.Float(from)
-
+class FloatTransformer extends StringValueTransformer[java.lang.Float]{
+  def toValue(from: String): Option[java.lang.Float] = {
+    try{
+      return Some(new java.lang.Float(from))
+    }catch{
+      case e: Exception => return None
+    }
+  }
 }

@@ -10,8 +10,15 @@ import java.lang.String
  * To change this template use File | Settings | File Templates.
  */
 
-class LongTransformer extends StringValueTransformer{
-  def toValue(stored: String) = new java.lang.Long(stored)
+class LongTransformer extends StringValueTransformer[Long]{
+  def toValue(from: String): Option[Long] = {
+    try{
+      return Some(new java.lang.Long(from).longValue)
+    }catch{
+      case e: Exception => return None
+    }
+
+  }
 
 
 }

@@ -8,9 +8,13 @@ package com.recursivity.commons.bean
  * To change this template use File | Settings | File Templates.
  */
 
-class JavaIntegerTransformer extends StringValueTransformer{
-  def toValue(from: String): AnyRef = {
-    return new java.lang.Integer(Integer.parseInt(from))
+class JavaIntegerTransformer extends StringValueTransformer[java.lang.Integer]{
+  def toValue(from: String): Option[java.lang.Integer] = {
+    try{
+      return Some(new java.lang.Integer(Integer.parseInt(from)))
+    }catch{
+      case e: Exception => return None
+    }
   }
 
 

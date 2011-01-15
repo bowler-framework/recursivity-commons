@@ -8,7 +8,13 @@ package com.recursivity.commons.bean
  * To change this template use File | Settings | File Templates.
  */
 
-class DoubleTransformer extends StringValueTransformer{
-  def toValue(from: String) = new java.lang.Double(from)
+class DoubleTransformer extends StringValueTransformer[java.lang.Double]{
+  def toValue(from: String): Option[java.lang.Double] = {
+    try{
+      return Some(new java.lang.Double(from))
+    }catch{
+      case e: Exception => return None
+    }
+  }
 
 }

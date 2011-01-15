@@ -8,6 +8,6 @@ package com.recursivity.commons.bean
  * To change this template use File | Settings | File Templates.
  */
 
-trait StringValueTransformer{
-  def toValue(from: String): AnyRef
+trait StringValueTransformer[T]{
+  def toValue(from: String): Option[T]
 }

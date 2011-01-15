@@ -8,7 +8,14 @@ package com.recursivity.commons.bean
  * To change this template use File | Settings | File Templates.
  */
 
-class ShortTransformer extends StringValueTransformer{
-  def toValue(from: String) = new java.lang.Short(from)
+class ShortTransformer extends StringValueTransformer[java.lang.Short]{
+  def toValue(from: String): Option[java.lang.Short] = {
+    try{
+      return Some(new java.lang.Short(from))
+    }catch{
+      case e: Exception => return None
+    }
+
+  }
 
 }
