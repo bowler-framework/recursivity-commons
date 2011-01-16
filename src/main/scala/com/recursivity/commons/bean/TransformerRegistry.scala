@@ -2,11 +2,7 @@ package com.recursivity.commons.bean
 import collection.mutable.HashMap
 
 /**
- * Created by IntelliJ IDEA.
- * User: wfaler
- * Date: Mar 25, 2010
- * Time: 11:25:17 PM
- * To change this template use File | Settings | File Templates.
+ * Central registry for StringValueTransformers. transformers are registered and retrieved from this object.
  */
 
 object TransformerRegistry{

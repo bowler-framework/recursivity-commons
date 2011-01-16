@@ -6,11 +6,8 @@ import collection.{TraversableLike}
 import collection.mutable.{DoubleLinkedList, LinkedList, Builder, MutableList}
 
 /**
- * Created by IntelliJ IDEA.
- * User: wfaler
- * Date: Nov 29, 2010
- * Time: 11:48:44 PM
- * To change this template use File | Settings | File Templates.
+ * Utility class that is able to create new instances of arbitrary objects and fill them with values/vars based on
+ * a map of values.
  */
 
 object BeanUtils {

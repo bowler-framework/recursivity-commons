@@ -3,11 +3,7 @@ package com.recursivity.commons
 import java.util.{Date, Calendar}
 
 /**
- * Created by IntelliJ IDEA.
- * User: wfaler
- * Date: Oct 30, 2010
- * Time: 10:51:43 AM
- * To change this template use File | Settings | File Templates.
+ * implicits for dates, counting days ago and from now.
  */
 
 
