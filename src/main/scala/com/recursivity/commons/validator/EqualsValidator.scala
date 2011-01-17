@@ -10,10 +10,15 @@ import collection.mutable.MutableList
  * To change this template use File | Settings | File Templates.
  */
 
-class EqualsValidator(key: String, value1: => Any, value2: => Any) extends Validator{
+case class EqualsValidator(key: String, value1: () => Any, value2: () => Any) extends Validator{
   def getKey = key
 
-  def isValid = (value1 == value2)
+  def isValid = (value1() == value2())
 
   def getReplaceModel = new MutableList[Tuple2[String, Any]].toList
+}
+
+object Equals {
+  def apply(key: String, value1: => Any, value2: => Any) =
+    EqualsValidator(key, () => value1, () => value2)
 }

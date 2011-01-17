@@ -10,13 +10,13 @@ import org.scalatest.FunSuite
  * To change this template use File | Settings | File Templates.
  */
 
-class LongValidatorTest extends FunSuite{
+class LongValidatorTest extends FunSuite {
   var long: Long = 5
   var limit: Long = 6
 
   test("MinIntValidator Test"){
     long = 7
-    val validator = new MinLongValidator("int", limit, {long})
+    val validator = MinLong("int", limit, long)
     assert(validator.isValid)
     long = 5
     assert(!validator.isValid)
@@ -24,7 +24,7 @@ class LongValidatorTest extends FunSuite{
 
   test("MaxIntValidator Test"){
     long = 5
-    val validator = new MaxLongValidator("int", limit, {long})
+    val validator = MaxLong("int", limit, long)
     assert(validator.isValid)
     long = 7
     assert(!validator.isValid)

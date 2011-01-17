@@ -11,15 +11,18 @@ import collection.mutable.MutableList
  * To change this template use File | Settings | File Templates.
  */
 
-class EmailValidator(key: String, value: => String) extends Validator{
+case class EmailValidator(key: String, value: () => String) extends Validator {
   def getKey = key
 
   def isValid: Boolean = {
     val p = Pattern.compile("^[_A-Za-z0-9-]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*((\\.[A-Za-z]{2,}){1}$)")
-    val m = p.matcher({value})
-    return m.matches
+    val m = p.matcher(value())
+    m.matches
   }
 
-
   def getReplaceModel = new MutableList[Tuple2[String, Any]].toList
+}
+
+object Email {
+  def apply(key: String, value: => String) = EmailValidator(key, () => value)
 }

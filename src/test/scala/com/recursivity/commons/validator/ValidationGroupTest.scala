@@ -18,10 +18,10 @@ class ValidationGroupTest extends FunSuite{
   test("successful validation"){
     val bean = new MyBean("hello", 5, 2 days from_now, Some(2))
     val group = new ValidationGroup
-    group.add(new MinLengthValidator("hello", 3, {bean.text}))
-    group.add(new MaxIntValidator("max", 6, {bean.number}))
-    group.add(new MinIntValidator("min", 4, {bean.number}))
-    group.add(new NotNullOrNoneValidator("null", {bean.text}))
+    group.add(MinLength("hello", 3, {bean.text}))
+    group.add(MaxInt("max", 6, {bean.number}))
+    group.add(MinInt("min", 4, {bean.number}))
+    group.add(NotNullOrNone("null", {bean.text}))
 
     val failures = group.validateAndReturnFailures
 
@@ -31,13 +31,13 @@ class ValidationGroupTest extends FunSuite{
   test("failedValidation"){
     val bean = new MyBean("hello", 5, 2 days from_now, None)
     val group = new ValidationGroup
-    val minLen = new MinLengthValidator("hello", 8, {bean.text})
+    val minLen = MinLength("hello", 8, {bean.text})
     group add minLen
-    val max = new MaxIntValidator("max", 3, {bean.number})
+    val max = MaxInt("max", 3, {bean.number})
     group add max
-    val min = new MinIntValidator("min", 6, {bean.number})
+    val min = MinInt("min", 6, {bean.number})
     group add min
-    val notNull = new NotNullOrNoneValidator("null", {bean.value})
+    val notNull = NotNullOrNone("null", {bean.value})
     group add notNull
     
 
@@ -56,13 +56,13 @@ class ValidationGroupTest extends FunSuite{
     val bean = new MyBean("hello", 5, new Date, None)
 
     // new ValidationGroup with a ClassPathMessageResolver
-    val group = new ValidationGroup(new ClasspathMessageResolver(this.getClass))
+    val group = ValidationGroup(new ClasspathMessageResolver(this.getClass))
 
     // add the validators to the ValidationGroup
-    group.add(new MinLengthValidator("hello", 8, {bean.text}))
-    group.add(new MaxIntValidator("max", 3, {bean.number}))
-    group.add(new MinIntValidator("min", 6, {bean.number}))
-    group.add(new NotNullOrNoneValidator("null", {bean.value}))
+    group.add(MinLength("hello", 8, {bean.text}))
+    group.add(MaxInt("max", 3, {bean.number}))
+    group.add(MinInt("min", 6, {bean.number}))
+    group.add(NotNullOrNone("null", {bean.value}))
 
     // validate and return error messages, a List of Tuple2's with (key, errorMessage) format.
     val failures = group.validateAndReturnErrorMessages

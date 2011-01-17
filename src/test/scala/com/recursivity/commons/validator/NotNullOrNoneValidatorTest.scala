@@ -12,11 +12,11 @@ import scala.{None}
  * To change this template use File | Settings | File Templates.
  */
 
-class NotNullOrNoneValidatorTest extends FunSuite{
+class NotNullOrNoneValidatorTest extends FunSuite {
 
   test("null"){
     val bean = new MyBean("hello", 1, 2 days from_now, Some(1))
-    val validator = new NotNullOrNoneValidator[String]("text", {bean.text})
+    val validator = NotNullOrNone[String]("text", {bean.text})
     assert(validator.isValid)
     bean.text = null
     assert(!validator.isValid)
@@ -24,11 +24,9 @@ class NotNullOrNoneValidatorTest extends FunSuite{
 
   test("Some/None"){
     val bean = new MyBean("hello", 1, 2 days from_now, Some(1))
-    val validator = new NotNullOrNoneValidator[Option[Int]]("value", {bean.value})
+    val validator = NotNullOrNone[Option[Int]]("value", {bean.value})
     assert(validator.isValid)
     bean.value = None
     assert(!validator.isValid)
-    
   }
-
 }

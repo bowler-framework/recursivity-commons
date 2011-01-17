@@ -14,7 +14,7 @@ class EmailValidatorTest extends FunSuite{
   var email = "wille.faler@gmail.com"
 
   test("validate email"){
-    val validator = new EmailValidator("email", {email})
+    val validator = Email("email", {email})
     assert(validator.isValid)
     email = "wille@gdg dfg.se"
     assert(!validator.isValid)

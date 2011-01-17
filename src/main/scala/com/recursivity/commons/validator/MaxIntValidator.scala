@@ -8,10 +8,15 @@ package com.recursivity.commons.validator
  * To change this template use File | Settings | File Templates.
  */
 
-class MaxIntValidator(key: String, max: Int, value: => Int) extends Validator{
+case class MaxIntValidator(key: String, max: Int, value: () => Int) extends Validator {
   def getKey = key
 
-  def isValid = (max >= value)
+  def isValid = (max >= value())
 
   def getReplaceModel = List(("max", max))
+}
+
+object MaxInt {
+  def apply(key: String, max: Int, value: => Int) =
+    MaxIntValidator(key, max, () => value)
 }

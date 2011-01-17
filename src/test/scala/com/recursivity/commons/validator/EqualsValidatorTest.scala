@@ -15,7 +15,7 @@ class EqualsValidatorTest extends FunSuite{
   var value2 = "hello2"
 
   test("test equals"){
-    val validator = new EqualsValidator("equals", {value1}, {value2})
+    val validator = Equals("equals", {value1}, {value2})
     assert(!validator.isValid)
     value2 = "hello"
     assert(validator.isValid)

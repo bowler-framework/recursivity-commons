@@ -8,10 +8,15 @@ package com.recursivity.commons.validator
  * To change this template use File | Settings | File Templates.
  */
 
-class MinLongValidator(key: String, min: Long, value: => Long) extends Validator{
+case class MinLongValidator(key: String, min: Long, value: () => Long) extends Validator{
   def getKey = key
 
-  def isValid = (min <= value)
+  def isValid = (min <= value())
 
   def getReplaceModel = List(("min", min))
+}
+
+object MinLong {
+  def apply(key: String, min: Long, value: => Long) =
+    MinLongValidator(key, min, () => value)
 }

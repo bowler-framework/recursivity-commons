@@ -8,14 +8,19 @@ package com.recursivity.commons.validator
  * To change this template use File | Settings | File Templates.
  */
 
-class StringLengthValidator(key: String, minLength: Int, maxLength: Int, value: => String) extends Validator{
+case class StringLengthValidator(key: String, minLength: Int, maxLength: Int, value: () => String) extends Validator {
   def getKey = key
 
   def isValid: Boolean = {
-    val string = value
+    val string = value()
     if(string != null && string.length <= maxLength && string.length >= minLength) return true;
     else return false;
   }
 
   def getReplaceModel = List(("min", minLength), ("max", maxLength))
+}
+
+object StringLength {
+  def apply(key: String, min: Int, max: Int, value: => String) =
+    StringLengthValidator(key, min, max, () => value)
 }

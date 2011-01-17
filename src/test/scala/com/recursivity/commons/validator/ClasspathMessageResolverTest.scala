@@ -10,10 +10,10 @@ import com.recursivity.commons.DateHelper._
  * To change this template use File | Settings | File Templates.
  */
 
-class ClasspathMessageResolverTest extends FunSuite{
+class ClasspathMessageResolverTest extends FunSuite {
   test("Message resolution"){
     val bean = new MyBean("hello", 5, 2 days from_now, None)
-    val minLen = new MinLengthValidator("hello", 8, {bean.text})
+    val minLen = MinLength("hello", 8, {bean.text})
     assert(!minLen.isValid)
 
     val resolver = new ClasspathMessageResolver(this.getClass)
@@ -24,7 +24,7 @@ class ClasspathMessageResolverTest extends FunSuite{
 
   test("localized"){
     val bean = new MyBean("hello", 5, 2 days from_now, None)
-    val minLen = new MinLengthValidator("hello", 8, {bean.text})
+    val minLen = MinLength("hello", 8, {bean.text})
     assert(!minLen.isValid)
 
     val resolver = new ClasspathMessageResolver(this.getClass, List("se"))
@@ -36,7 +36,7 @@ class ClasspathMessageResolverTest extends FunSuite{
 
   test("localized - no properties, fallback to default"){
     val bean = new MyBean("hello", 5, 2 days from_now, None)
-    val minLen = new MinLengthValidator("hello", 8, {bean.text})
+    val minLen = MinLength("hello", 8, {bean.text})
     assert(!minLen.isValid)
 
     val resolver = new ClasspathMessageResolver(this.getClass, List("es"))
@@ -48,7 +48,7 @@ class ClasspathMessageResolverTest extends FunSuite{
 
   test("localized - no properties, fallback to second choice"){
     val bean = new MyBean("hello", 5, 2 days from_now, None)
-    val minLen = new MinLengthValidator("hello", 8, {bean.text})
+    val minLen = MinLength("hello", 8, {bean.text})
     assert(!minLen.isValid)
 
     val resolver = new ClasspathMessageResolver(this.getClass, List("es", "se"))
@@ -60,7 +60,7 @@ class ClasspathMessageResolverTest extends FunSuite{
 
   test("localized with 2 choices - no properties, fallback to default"){
     val bean = new MyBean("hello", 5, 2 days from_now, None)
-    val minLen = new MinLengthValidator("hello", 8, {bean.text})
+    val minLen = MinLength("hello", 8, {bean.text})
     assert(!minLen.isValid)
 
     val resolver = new ClasspathMessageResolver(this.getClass, List("es", "fi"))
@@ -70,7 +70,7 @@ class ClasspathMessageResolverTest extends FunSuite{
 
   test("no property for key defined"){
     val bean = new MyBean("hello", 5, 2 days from_now, None)
-    val minLen = new MinLengthValidator("howdy", 8, {bean.text})
+    val minLen = MinLength("howdy", 8, {bean.text})
     assert(!minLen.isValid)
 
     val resolver = new ClasspathMessageResolver(this.getClass)

@@ -8,7 +8,7 @@ package com.recursivity.commons.validator
  * To change this template use File | Settings | File Templates.
  */
 
-trait Validator{
+trait Validator {
   def isValid: Boolean
 
   /**
