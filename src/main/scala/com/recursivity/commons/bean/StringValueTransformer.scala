@@ -1,13 +1,10 @@
 package com.recursivity.commons.bean
 
 /**
- * Created by IntelliJ IDEA.
- * User: wfaler
- * Date: Mar 25, 2010
- * Time: 11:23:18 PM
- * To change this template use File | Settings | File Templates.
+ * Implementations transform/looks up from a String to an Option of type Option[T], or "None" if a transformation is not possible.
+ * Useful for instance as an indirection for retrieving objects from a persistent store by ID.
  */
 
-trait StringValueTransformer{
-  def toValue(from: String): AnyRef
+trait StringValueTransformer[T]{
+  def toValue(from: String): Option[T]
 }

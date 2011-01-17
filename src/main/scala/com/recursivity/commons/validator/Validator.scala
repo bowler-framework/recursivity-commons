@@ -1,14 +1,13 @@
 package com.recursivity.commons.validator
 
 /**
- * Created by IntelliJ IDEA.
- * User: wfaler
- * Date: Oct 30, 2010
- * Time: 5:16:34 PM
- * To change this template use File | Settings | File Templates.
+ * validates a value
  */
-
 trait Validator {
+
+  /**
+   * checks validity
+   */
   def isValid: Boolean
 
   /**
@@ -17,7 +16,7 @@ trait Validator {
   def getReplaceModel: List[Tuple2[String, Any]]
 
   /**
-   * Returns the key, such as a property name that this validator is bound to
+   * Returns the key, such as a property name or property-name key that this validator is bound to
    */
   def getKey: String
 }

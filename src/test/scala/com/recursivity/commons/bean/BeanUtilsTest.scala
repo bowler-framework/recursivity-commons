@@ -164,9 +164,16 @@ class BeanUtilsTest extends FunSuite{
     assert(bean.seq.foldLeft(0)((b,a) => b + a) == 14)
   }
 
+  test("IllegalArgumentTest"){
+    val map = Map("int" -> "r", "long" -> "5", "string" -> "hello")
+    val bean = BeanUtils.instantiate[IntPrimitiveBean](classOf[IntPrimitiveBean], map)
+    println(bean)
 
+  }
 
 }
+
+case class IntPrimitiveBean(int: Int, long: Long, string: String)
 
 case class SeqBean(seq: Seq[Int])
 

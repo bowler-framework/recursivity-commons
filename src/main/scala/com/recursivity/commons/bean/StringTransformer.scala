@@ -10,6 +10,6 @@ import java.lang.String
  * To change this template use File | Settings | File Templates.
  */
 
-class StringTransformer extends StringValueTransformer{
-  def toValue(from: String) = from
+class StringTransformer extends StringValueTransformer[String]{
+  def toValue(from: String) = Some(from)
 }

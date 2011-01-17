@@ -4,11 +4,7 @@ import collection.mutable.MutableList
 
 
 /**
- * Created by IntelliJ IDEA.
- * User: wfaler
- * Date: Oct 30, 2010
- * Time: 5:57:51 PM
- * To change this template use File | Settings | File Templates.
+ * Useful utility class for grouping Validators.
  */
 
 case class ValidationGroup(messageResolver: MessageResolver = null){

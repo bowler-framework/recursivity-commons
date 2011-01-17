@@ -4,11 +4,8 @@ import com.recursivity.commons.ClasspathPropertiesResolver
 
 
 /**
- * Created by IntelliJ IDEA.
- * User: wfaler
- * Date: Nov 4, 2010
- * Time: 3:27:43 PM
- * To change this template use File | Settings | File Templates.
+ * Resolves error messages for a validator from the classpath, given a classpath context and optional list of locale preferences.
+ * localisation enabled.
  */
 
 class ClasspathMessageResolver(context: Class[_], locale: List[String] = List()) extends MessageResolver {

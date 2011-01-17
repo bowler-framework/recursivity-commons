@@ -8,13 +8,15 @@ package com.recursivity.commons.bean
  * To change this template use File | Settings | File Templates.
  */
 
-class JavaBooleanTransformer extends StringValueTransformer{
-def toValue(from: String): AnyRef = {
+class JavaBooleanTransformer extends StringValueTransformer[java.lang.Boolean]{
+def toValue(from: String): Option[java.lang.Boolean] = {
+    if(from == null)
+      return None
     if(from.equals("true"))
-      return new java.lang.Boolean("true")
+      return Some(new java.lang.Boolean("true"))
     else if(from.equals("false"))
-      return new java.lang.Boolean("false")
-    else throw new IllegalArgumentException("not true or false")
+      return Some(new java.lang.Boolean("false"))
+    else return None
   }
 
 }
