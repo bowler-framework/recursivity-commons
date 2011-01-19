@@ -15,7 +15,7 @@ object ClasspathResourceResolver {
   /**
    * Gets a resource with no fallback to default if localised file does not exist
    */
-  def getAbsoluteResource(context: Class[_], fileType: String, locale: String = null)(op: InputStream => Any) = {
+  def getAbsoluteResource(context: Class[_], fileType: String, locale: Option[String] = None)(op: InputStream => Any) = {
     var is: InputStream = null
     try {
       val path = getUri(context, fileType, locale)
@@ -27,19 +27,14 @@ object ClasspathResourceResolver {
     }
   }
 
-  def getUri(context: Class[_], fileType: String, locale: String = null): String = {
-    var path: String = null
-    var fileEnding: String = null
-    if (fileType.startsWith("."))
-      fileEnding = fileType
-    else
-      fileEnding = "." + fileType
-
-    if (locale == null) {
-      path = "/" + context.getName.replace(".", "/") + fileEnding
-    } else {
-      path = "/" + context.getName.replace(".", "/") + "_" + locale + fileEnding
+  def getUri(context: Class[_], fileType: String, locale: Option[String] = None): String = {
+    val fileEnding = if (fileType.startsWith(".")) fileType else "." + fileType
+    val loc = locale match {
+      case None => ""
+      case Some(x) => "_" + x
     }
+
+    val path = "/" + context.getName.replace(".", "/") + loc + fileEnding
     return path
   }
 
@@ -48,10 +43,10 @@ object ClasspathResourceResolver {
    */
   def resolveResource(context: Class[_], fileType: String, locale: List[String] = List())(op: InputStream => Any): Any = {
     if (locale == Nil)
-      getAbsoluteResource(context, fileType, null) {is => op(is)}
+      getAbsoluteResource(context, fileType, None) {is => op(is)}
     else {
       try {
-        getAbsoluteResource(context, fileType, locale.head) {is => op(is)}
+        getAbsoluteResource(context, fileType, Some(locale.head)) {is => op(is)}
       } catch {
         case e: NullPointerException => {
           val localeList = locale.drop(1)

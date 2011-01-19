@@ -13,13 +13,14 @@ import collection.mutable.HashMap
 
 object ClasspathPropertiesResolver {
 
-  def getProperties(context: Class[_], locale: List[String] = List()): Properties = {
+  def getProperties(context: Class[_], locale: List[String] = Nil): Properties = {
     var properties: Properties = null
+
     if (locale == Nil) {
       properties = loadProperties(context)
     } else {
       try {
-        properties = loadProperties(context, locale.head)
+        properties = loadProperties(context, Some(locale.head))
       } catch {
         case ex: NullPointerException => {
           val localeList = locale.drop(1)
@@ -31,7 +32,7 @@ object ClasspathPropertiesResolver {
     return properties
   }
 
-  private def loadProperties(context: Class[_], locale: String = null): Properties = {
+  private def loadProperties(context: Class[_], locale: Option[String] = None): Properties = {
     var properties = new Properties
     ClasspathResourceResolver.getAbsoluteResource(context, ".properties", locale) {
       is => properties.load(is)

@@ -11,6 +11,7 @@ import org.scalatest.FunSuite
  */
 
 class StringLengthValidatorTest extends FunSuite {
+
   test("MinLength test"){
     val bean = new MyBean("hello", 1, new java.util.Date, Some(1))
     val validator = MinLength("text", 3, bean.text)
@@ -36,6 +37,4 @@ class StringLengthValidatorTest extends FunSuite {
     bean.text = "123456"
     assert(!validator.isValid)
   }
-
-
 }

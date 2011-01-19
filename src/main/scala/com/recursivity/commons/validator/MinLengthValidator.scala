@@ -22,3 +22,5 @@ object MinLength {
   def apply(key: String, length: Int, value: => String) =
     new MinLengthValidator(key, length, () => value)
 }
+
+
