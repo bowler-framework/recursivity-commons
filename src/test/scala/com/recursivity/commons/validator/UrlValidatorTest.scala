@@ -15,6 +15,8 @@ class UrlValidatorTest extends FunSuite {
     assert(validator.isValid)
     url = "http://www.github.com/wfaler/recursivity-commons?kv=v&h=l"
     assert(validator.isValid)
+    url = "http://www.github.com/wfaler/recursivity    -commons?kv=v&h=l"
+    assert(!validator.isValid)
     url = "www.github.com/wfaler"
     assert(!validator.isValid)
   }
