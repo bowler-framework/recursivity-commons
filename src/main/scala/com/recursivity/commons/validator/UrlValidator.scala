@@ -3,6 +3,11 @@ package com.recursivity.commons.validator
 import java.util.regex.Pattern
 import scala.collection.mutable.{HashSet, MutableList}
 
+/*
+ * The base code is from the Wicket UrlValidator.
+ * https://fisheye6.atlassian.com/browse/~raw,r=1052932/wicket/trunk/
+ * wicket-core/src/main/java/org/apache/wicket/validation/validator/UrlValidator.java
+ */
 /**
  * Checks if an Url is well formed.
  *
