@@ -22,16 +22,28 @@ object TransformerRegistry{
   registry += classOf[Short] -> classOf[ShortTransformer]
   registry += classOf[java.lang.Short] -> classOf[ShortTransformer]
 
+  private val singletonRegistry = new HashMap[Class[_], StringValueTransformer[_]]
+
 
   def resolveTransformer(clazz: Class[_]): Option[StringValueTransformer[_]] = {
     try{
-      return Some(registry(clazz).newInstance)
+      return Some(singletonRegistry(clazz))
     }catch{
-      case e: NoSuchElementException => return None
+      case ex: NoSuchElementException => {
+        try{
+          return Some(registry(clazz).newInstance)
+        }catch{
+          case e: NoSuchElementException => return None
+        }
+      }
     }
   }
 
   def registerTransformer(clazz: Class[_], transformerClass: Class[_<: StringValueTransformer[_]]){
      registry += clazz -> transformerClass
+  }
+
+  def registerSingletonTransformer(clazz: Class[_], transformer: StringValueTransformer[_]){
+     singletonRegistry += clazz -> transformer
   }
 }

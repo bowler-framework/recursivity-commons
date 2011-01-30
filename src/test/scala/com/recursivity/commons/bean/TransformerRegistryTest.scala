@@ -93,5 +93,17 @@ class TransformerRegistryTest extends FunSuite {
     assert(None.equals(transformer.toValue("00000sdfsdf00045")))
   }
 
+  test("register singleton transformer"){
+    TransformerRegistry.registerSingletonTransformer(classOf[MyTransformerBean], new MyTransformer)
+    println(TransformerRegistry.resolveTransformer(classOf[MyTransformerBean]))
+    assert(TransformerRegistry.resolveTransformer(classOf[MyTransformerBean]).get.getClass == classOf[MyTransformer])
+  }
 
+
+}
+
+case class MyTransformerBean
+
+class MyTransformer extends StringValueTransformer[MyTransformerBean]{
+  def toValue(from: String) = None
 }
