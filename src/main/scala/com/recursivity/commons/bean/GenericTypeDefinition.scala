@@ -13,7 +13,7 @@ import java.lang.reflect.ParameterizedType
  * To change this template use File | Settings | File Templates.
  */
 
-object GenericsParser extends RegexParsers {
+object GenericTypeDefinition extends RegexParsers {
   val ID = """[a-zA-Z]([a-zA-Z0-9]|_[a-zA-Z0-9])*""" r
 
   def clazz: Parser[GenericTypeDefinition] = className ~ opt(genericType) ^^ {case s ~ n => GenericTypeDefinition(s, n)}
@@ -35,10 +35,10 @@ object GenericsParser extends RegexParsers {
 
   def className: Parser[String] = repsep(ID, ".") ^^ { case (ts: List[String]) => ts mkString "." }
 
-  def parseDefinition(cls: ParameterizedType): GenericTypeDefinition = parseDefinition(cls.toString)
+  def apply(cls: ParameterizedType): GenericTypeDefinition = apply(cls.toString)
 
 
-  def parseDefinition(cls: String): GenericTypeDefinition = {
+  def apply(cls: String): GenericTypeDefinition = {
     parse(clazz, cls) match {
       case Success(definition, _) => return definition
       case Failure(msg, _) => throw new IllegalArgumentException("Failure: " + msg)

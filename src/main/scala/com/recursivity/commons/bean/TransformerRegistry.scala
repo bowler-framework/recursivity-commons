@@ -25,7 +25,7 @@ object TransformerRegistry{
   private val singletonRegistry = new HashMap[Class[_], StringValueTransformer[_]]
 
 
-  def resolveTransformer(clazz: Class[_]): Option[StringValueTransformer[_]] = {
+  def apply(clazz: Class[_]): Option[StringValueTransformer[_]] = {
     try{
       return Some(singletonRegistry(clazz))
     }catch{

@@ -63,9 +63,9 @@ object BeanUtils {
       field.setAccessible(true)
       if (classOf[ParameterizedType].isAssignableFrom(field.getGenericType.getClass) || fieldCls.equals(classOf[Array[_]])) {
         val parameterized = field.getGenericType.asInstanceOf[ParameterizedType]
-        field.set(bean, resolveGenerifiedValue(fieldCls, GenericsParser.parseDefinition(parameterized), value))
+        field.set(bean, resolveGenerifiedValue(fieldCls, GenericTypeDefinition(parameterized), value))
       } else {
-        val transformer = TransformerRegistry.resolveTransformer(fieldCls)
+        val transformer = TransformerRegistry(fieldCls)
         field.set(bean, transformer.getOrElse(throw new BeanTransformationException(fieldCls)).toValue(value.toString).getOrElse(null))
       }
     } catch {
@@ -86,7 +86,7 @@ object BeanUtils {
     } else if (classOf[Option[_ <: Any]].isAssignableFrom(cls)) {
       val c = Class.forName(genericType.genericTypes.get.head.clazz)
       if (genericType.genericTypes.get.head.genericTypes.equals(None)) {
-        val transformer = TransformerRegistry.resolveTransformer(c)
+        val transformer = TransformerRegistry(c)
         return transformer.getOrElse(throw new BeanTransformationException(c)).toValue(input.toString)
       } else {
         val t = genericType.genericTypes.get.head
@@ -122,7 +122,7 @@ object BeanUtils {
 
   private def valueList(genericType: GenericTypeDefinition, input: Any): MutableList[Any] = {
     val c = Class.forName(genericType.genericTypes.get.head.clazz)
-    val transformer = TransformerRegistry.resolveTransformer(c)
+    val transformer = TransformerRegistry(c)
     val list = new MutableList[Any]
     if (input.isInstanceOf[List[_]]) {
       val l = input.asInstanceOf[List[_]]

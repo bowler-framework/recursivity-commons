@@ -16,7 +16,7 @@ class GenericsParserTest extends FunSuite{
   test("parse  nested generics"){
     //val generics = "scala.collection.immutable.List<scala.collection.immutable.Map<java.lang.String>>"
     val generics = "scala.collection.immutable.List<scala.collection.immutable.Map<java.lang.String, java.lang.String>>"
-    val typeDef = GenericsParser.parseDefinition(generics)
+    val typeDef = GenericTypeDefinition(generics)
     assert(typeDef != null)
 
     assert(typeDef.clazz.equals("scala.collection.immutable.List"))
@@ -33,7 +33,7 @@ class GenericsParserTest extends FunSuite{
 
   test("one level nested generics"){
     val generics = "scala.collection.immutable.List<scala.collection.immutable.Map<java.lang.String>>"
-    val typeDef = GenericsParser.parseDefinition(generics)
+    val typeDef = GenericTypeDefinition(generics)
     assert(typeDef != null)
 
     assert(typeDef.clazz.equals("scala.collection.immutable.List"))
@@ -50,7 +50,7 @@ class GenericsParserTest extends FunSuite{
 
   test("simple generics"){
     val generics = "scala.collection.immutable.List<java.lang.String>"
-    val typeDef = GenericsParser.parseDefinition(generics)
+    val typeDef = GenericTypeDefinition(generics)
     assert(typeDef != null)
 
     assert(typeDef.clazz.equals("scala.collection.immutable.List"))
@@ -62,12 +62,12 @@ class GenericsParserTest extends FunSuite{
 
 
   test("GenericTypeDef.toSimpleString"){
-    val typeDef = GenericsParser.parseDefinition("scala.collection.immutable.List<scala.collection.immutable.Map<java.lang.String, java.lang.String>>")
+    val typeDef = GenericTypeDefinition("scala.collection.immutable.List<scala.collection.immutable.Map<java.lang.String, java.lang.String>>")
     assert(typeDef.toSimpleString().equals("List[Map[String,String]]"))
   }
 
   test("GenericTypeDef.toSimpleString - lower case"){
-    val typeDef = GenericsParser.parseDefinition("scala.collection.immutable.List<scala.collection.immutable.Map<java.lang.String, java.lang.String>>")
+    val typeDef = GenericTypeDefinition("scala.collection.immutable.List<scala.collection.immutable.Map<java.lang.String, java.lang.String>>")
     assert(typeDef.toSimpleString(true).equals("list[map[string,string]]"))
   }
 
