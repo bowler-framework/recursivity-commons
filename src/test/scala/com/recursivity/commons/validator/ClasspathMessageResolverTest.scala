@@ -78,4 +78,26 @@ class ClasspathMessageResolverTest extends FunSuite {
     //println(result)
     assert("howdy must be at least 8 characters long".equals(result))
   }
+
+  test("no message for validator defined"){
+    val bean = new MyBean("hello", 5, 2 days from_now, None)
+    val maxLen = MaxLength("howdy", 2, {bean.text})
+    assert(!maxLen.isValid)
+
+    val resolver = new ClasspathMessageResolver(this.getClass)
+
+    try{
+      val result = resolver.resolveMessage(maxLen)
+      fail("should throw null pointer")
+
+    }catch{
+      case e: NullPointerException => {
+        println(e.getMessage)
+        var message = "Could not find a message for the validator key MaxLengthValidator in the context com.recursivity.commons.validator.ClasspathMessageResolverTest"
+        assert(message == e.getMessage)
+      }
+    }
+
+
+  }
 }
