@@ -12,10 +12,10 @@ import io.Source
  */
 
 trait StringInputStreamReader{
-
+                                 //System.getProperty ("line.separator")
 
   def load(is: InputStream): String = {
-    return Source.fromInputStream(is).getLines.reduceLeft(_ + _)
+    return Source.fromInputStream(is).getLines.reduceLeft((a: String, b: String) => a + System.getProperty("line.separator") +  b)
   }
 
 }

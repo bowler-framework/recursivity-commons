@@ -48,4 +48,6 @@ class ClasspathTextResourceTest extends FunSuite{
     println("closing: " + is)
     is.close
   }
+
 }
+
