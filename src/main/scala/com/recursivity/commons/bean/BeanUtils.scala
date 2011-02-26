@@ -1,9 +1,9 @@
 package com.recursivity.commons.bean
 
-import java.lang.reflect.{ParameterizedType}
 import collection.immutable._
 import collection.{TraversableLike}
 import collection.mutable.{DoubleLinkedList, LinkedList, Builder, MutableList}
+import java.lang.reflect.{Constructor, ParameterizedType}
 
 /**
  * Utility class that is able to create new instances of arbitrary objects and fill them with values/vars based on
@@ -12,7 +12,11 @@ import collection.mutable.{DoubleLinkedList, LinkedList, Builder, MutableList}
 
 object BeanUtils {
   def instantiate[T](cls: Class[_]): T = {
-    val cons = cls.getConstructors.head
+    var cons: Constructor[_] = null
+    cls.getConstructors.foreach(c =>{
+      if (cons == null) cons = c
+      if(c.getParameterTypes.size > cons.getParameterTypes.size) cons = c
+    })
     val list = new MutableList[AnyRef]
     cons.getParameterTypes.foreach(cls => {
       cls.getName match {
