@@ -102,7 +102,7 @@ class TransformerRegistryTest extends FunSuite {
 
 }
 
-case class MyTransformerBean
+case class MyTransformerBean()
 
 class MyTransformer extends StringValueTransformer[MyTransformerBean]{
   def toValue(from: String) = None
