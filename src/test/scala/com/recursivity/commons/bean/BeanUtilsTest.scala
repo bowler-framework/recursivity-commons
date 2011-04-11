@@ -160,8 +160,8 @@ class BeanUtilsTest extends FunSuite{
     val map = Map("seq" -> List("1", "2", "3", "4", "4"))
     val bean = BeanUtils.instantiate[SeqBean](classOf[SeqBean], map)
     assert(bean != null)
-    assert(bean.seq.size == 5)
-    assert(bean.seq.foldLeft(0)((b,a) => b + a) == 14)
+    assert(bean.sequenceProperty.size == 5)
+    assert(bean.sequenceProperty.foldLeft(0)((b,a) => b + a) == 14)
   }
 
   test("IllegalArgumentTest"){
@@ -175,7 +175,7 @@ class BeanUtilsTest extends FunSuite{
 
 case class IntPrimitiveBean(int: Int, long: Long, string: String)
 
-case class SeqBean(seq: Seq[Int])
+case class SeqBean(sequenceProperty: Seq[Int])
 
 case class JavaLinkedList(list: java.util.LinkedList[Int])
 

@@ -3,7 +3,9 @@ import sbt._
 class CommonsProject(info: ProjectInfo) extends DefaultProject(info){//} with ChecksumPlugin{
 	
   val scalatest = "org.scalatest" % "scalatest" %
-	    "1.2" % "test"
+	    "1.4-SNAPSHOT" % "test"
+
+  val asm = "org.scala-lang" % "scalap" % buildScalaVersion
 	
   Credentials(Path.userHome / ".ivy2" / ".credentials", log)
 
@@ -20,6 +22,7 @@ class CommonsProject(info: ProjectInfo) extends DefaultProject(info){//} with Ch
   override def packageSrcJar= defaultJarPath("-sources.jar")
   lazy val sourceArtifact = Artifact.sources(artifactID)
   lazy val docsArtifact = Artifact.javadoc(artifactID)
+  val scalaTestRepo = "Scala Test Repo" at "http://scala-tools.org/repo-snapshots"
 
 override def packageToPublishActions = super.packageToPublishActions ++ Seq(packageDocs, packageSrc)
  override def pomExtra = {
