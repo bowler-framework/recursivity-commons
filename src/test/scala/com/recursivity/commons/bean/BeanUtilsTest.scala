@@ -173,7 +173,7 @@ class BeanUtilsTest extends FunSuite{
 
 }
 
-case class IntPrimitiveBean(int: Int, long: Long, string: String)
+case class IntPrimitiveBean(int: Int, long: Long, myString: String)
 
 case class SeqBean(seq: Seq[Int])
 
