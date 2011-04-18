@@ -3,7 +3,8 @@ package com.recursivity.commons.bean
 import collection.immutable._
 import collection.{TraversableLike}
 import collection.mutable.{DoubleLinkedList, LinkedList, Builder, MutableList}
-import java.lang.reflect.{Constructor, ParameterizedType}
+import java.lang.reflect.{Field, Constructor, ParameterizedType}
+import scalap.{Member, ClassSignature}
 
 /**
  * Utility class that is able to create new instances of arbitrary objects and fill them with values/vars based on
@@ -67,7 +68,8 @@ object BeanUtils {
       field.setAccessible(true)
       if (classOf[ParameterizedType].isAssignableFrom(field.getGenericType.getClass) || fieldCls.equals(classOf[Array[_]])) {
         val parameterized = field.getGenericType.asInstanceOf[ParameterizedType]
-        field.set(bean, resolveGenerifiedValue(fieldCls, GenericTypeDefinition(parameterized), value))
+        setGenerified(field, bean, fieldCls, GenericTypeDefinition(parameterized), value)
+
       } else {
         val transformer = TransformerRegistry(fieldCls)
         field.set(bean, transformer.getOrElse(throw new BeanTransformationException(fieldCls)).toValue(value.toString).getOrElse(null))
@@ -80,6 +82,33 @@ object BeanUtils {
     }
   }
 
+
+  private def setGenerified(field: Field, bean: Any, fieldCls: Class[_], typeDef: GenericTypeDefinition, value: Any) {
+    if(!typeDefHasObject(typeDef))
+      field.set(bean, resolveGenerifiedValue(fieldCls, typeDef, value))
+    else{
+      val signature = ClassSignature(bean.asInstanceOf[AnyRef].getClass)
+      var member: Option[Member] = None
+      signature.members.foreach(f => {
+        if(f.name == field.getName)
+          member = Some(f)
+      })
+      field.set(bean, resolveGenerifiedValue(fieldCls, member.getOrElse(throw new
+          IllegalArgumentException("Could not resolve generic type for: " + member)).returnType, value))
+    }
+  }
+
+  private def typeDefHasObject(typeDef: GenericTypeDefinition): Boolean = {
+    var result = false
+    if(typeDef.clazz == "java.lang.Object")
+      return true
+    typeDef.genericTypes.getOrElse(return false).foreach(f => {
+      if(!result)
+        result = typeDefHasObject(f)
+    })
+    result
+  }
+
   private def resolveGenerifiedValue(cls: Class[_], genericType: GenericTypeDefinition, input: Any): Any = {
     if (classOf[TraversableLike[_ <: Any, _ <: Any]].isAssignableFrom(cls)) {
       val list = valueList(genericType, input)
@@ -88,13 +117,13 @@ object BeanUtils {
       val list = valueList(genericType, input)
       return resolveJavaCollectionType(cls, list)
     } else if (classOf[Option[_ <: Any]].isAssignableFrom(cls)) {
-      val c = Class.forName(genericType.genericTypes.get.head.clazz)
+      val c = getClassForScalaType(genericType.genericTypes.get.head.clazz)
       if (genericType.genericTypes.get.head.genericTypes.equals(None)) {
         val transformer = TransformerRegistry(c)
         return transformer.getOrElse(throw new BeanTransformationException(c)).toValue(input.toString)
       } else {
         val t = genericType.genericTypes.get.head
-        val targetCls = Class.forName(t.clazz)
+        val targetCls = getClassForScalaType(t.clazz)
         return Some(resolveGenerifiedValue(targetCls, t, input))
       }
     } else {
@@ -125,7 +154,7 @@ object BeanUtils {
   }
 
   private def valueList(genericType: GenericTypeDefinition, input: Any): MutableList[Any] = {
-    val c = Class.forName(genericType.genericTypes.get.head.clazz)
+    val c = getClassForScalaType(genericType.genericTypes.get.head.clazz)
     val transformer = TransformerRegistry(c)
     val list = new MutableList[Any]
     if (input.isInstanceOf[List[_]]) {
@@ -188,6 +217,25 @@ object BeanUtils {
     })
 
     return bean
+  }
+
+  private def getClassForScalaType(cls: String): Class[_] = {
+    var fieldCls: Class[_] = null
+    cls match {
+      case "scala.Long" => fieldCls = classOf[Long]
+      case "scala.Int" => fieldCls = classOf[java.lang.Integer]
+      case "scala.Float" => fieldCls = classOf[java.lang.Float]
+      case "scala.Double" => fieldCls = classOf[java.lang.Double]
+      case "scala.Boolean" => fieldCls = classOf[java.lang.Boolean]
+      case "scala.Short" => fieldCls = classOf[java.lang.Short]
+      case "scala.List" => fieldCls = classOf[List[_]]
+      case "scala.Option" => fieldCls = classOf[Option[_]]
+      case "scala.Seq" => fieldCls = classOf[Seq[_]]
+      case "scala.Set" => fieldCls = classOf[Set[_]]
+      case "scala.Predef.String" => fieldCls = classOf[java.lang.String]
+      case _ => fieldCls = Class.forName(cls)
+    }
+    fieldCls
   }
 
 

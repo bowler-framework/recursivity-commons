@@ -50,9 +50,17 @@ class ClassSignatureTest extends FunSuite{
 
   }
 
+  test("case class with generified list"){
+    val sig = ClassSignature(classOf[GenerifiedClass])
+    assert("scala.List" == sig.members.head.returnType.clazz)
+    assert("scala.Predef.String" == sig.members.head.returnType.genericTypes.get.head.clazz)
+  }
+
 }
 
 class Hello
 case class CaseClass(hello: String)
 
 case class CaseWithVar(var myVar: String)
+
+case class GenerifiedClass(hello: List[String])

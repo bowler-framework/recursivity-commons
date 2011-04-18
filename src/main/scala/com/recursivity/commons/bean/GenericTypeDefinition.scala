@@ -39,7 +39,9 @@ object GenericTypeDefinition extends RegexParsers {
 
 
   def apply(cls: String): GenericTypeDefinition = {
-    parse(clazz, cls) match {
+    var parseThis = cls.replace("[", "<")
+    parseThis = parseThis.replace("]", ">")
+    parse(clazz, parseThis) match {
       case Success(definition, _) => return definition
       case Failure(msg, _) => throw new IllegalArgumentException("Failure: " + msg)
       case Error(msg, _) => throw new IllegalArgumentException("Error: " + msg)

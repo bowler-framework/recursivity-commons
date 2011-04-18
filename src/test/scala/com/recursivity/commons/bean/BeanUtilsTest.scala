@@ -156,7 +156,7 @@ class BeanUtilsTest extends FunSuite{
     assert(14 == i)
   }
 
-  test("Seq"){
+ test("Seq"){
     val map = Map("seq" -> List("1", "2", "3", "4", "4"))
     val bean = BeanUtils.instantiate[SeqBean](classOf[SeqBean], map)
     assert(bean != null)
@@ -175,7 +175,7 @@ class BeanUtilsTest extends FunSuite{
 
 case class IntPrimitiveBean(int: Int, long: Long, myString: String)
 
-case class SeqBean(seq: Seq[Int])
+case class SeqBean(seq: Seq[java.lang.Integer])
 
 case class JavaLinkedList(list: java.util.LinkedList[Int])
 

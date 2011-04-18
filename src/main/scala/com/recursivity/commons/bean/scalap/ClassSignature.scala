@@ -11,14 +11,14 @@ import scala.util.parsing.combinator.syntactical._
 /**
  * Created by IntelliJ IDEA.
  * User: wfaler
- * Date: 11/04/2011
+ * Date: 11/04/2011val ID = """[a-zA-Z]([a-zA-Z0-9]|_[a-zA-Z0-9])*"""r
  * Time: 23:11
  * To change this template use File | Settings | File Templates.
  */
 
 object ClassSignature extends RegexParsers {
   val lineBreak = System.getProperty("line.separator")
-  val ID = """[a-zA-Z]([a-zA-Z0-9]|_[a-zA-Z0-9])*"""r
+  val ID = """[a-zA-Z\[\]]([a-zA-Z0-9\[\]]|_[a-zA-Z0-9\[\]])*"""r
 
   def parameter: Parser[Parameter] = (opt("val" | "var") ~ ID ~ ":" ~ className) ^^ {case (x ~ s ~  f ~ n) => {Parameter(s, GenericTypeDefinition(n))}}
 
