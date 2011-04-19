@@ -78,7 +78,7 @@ class BeanUtilsTest extends FunSuite{
     val bean = BeanUtils.instantiate[MutableListBean](classOf[MutableListBean], map)
     assert(bean != null)
     assert(bean.list.size == 5)
-    assert(bean.list.foldLeft(0)((b,a) => b + a) == 14)
+    assert(bean.list.foldLeft(0)(_ + _) == 14)
 
   }
 
@@ -87,7 +87,7 @@ class BeanUtilsTest extends FunSuite{
     val bean = BeanUtils.instantiate[GrowableSetOrListBean](classOf[GrowableSetOrListBean], map)
     assert(bean != null)
     assert(bean.list.size == 4)
-    assert(bean.list.foldLeft(0)((b,a) => b + a) == 10)
+    assert(bean.list.foldLeft(0)(_+_) == 10)
   }
 
   test("mutable LinkedList (not a Growable)"){
@@ -95,7 +95,7 @@ class BeanUtilsTest extends FunSuite{
     val bean = BeanUtils.instantiate[LinkedListBean](classOf[LinkedListBean], map)
     assert(bean != null)
     assert(bean.list.size == 5)
-    assert(bean.list.foldLeft(0)((b,a) => b + a) == 14)
+    assert(bean.list.foldLeft(0)(_+_) == 14)
 
   }
 
@@ -104,7 +104,7 @@ class BeanUtilsTest extends FunSuite{
     val bean = BeanUtils.instantiate[ListSetBean](classOf[ListSetBean], map)
     assert(bean != null)
     assert(bean.list.size == 4)
-    assert(bean.list.foldLeft(0)((b,a) => b + a) == 10)
+    assert(bean.list.foldLeft(0)(_+_) == 10)
     
   }
 
@@ -161,7 +161,7 @@ class BeanUtilsTest extends FunSuite{
     val bean = BeanUtils.instantiate[SeqBean](classOf[SeqBean], map)
     assert(bean != null)
     assert(bean.seq.size == 5)
-    assert(bean.seq.foldLeft(0)((b,a) => b + a) == 14)
+    assert(bean.seq.foldLeft(0)(_.intValue +_.intValue) == 14)
   }
 
   test("IllegalArgumentTest"){
