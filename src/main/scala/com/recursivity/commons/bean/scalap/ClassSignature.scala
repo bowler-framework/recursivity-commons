@@ -26,11 +26,17 @@ object ClassSignature extends RegexParsers {
 
   def className: Parser[String] = repsep(ID, ".") ^^ { case (ts: List[String]) => ts mkString "." }
 
-  def member: Parser[Member] = (valParse | varParse) ^^ {case s => s}
+  def valOrVar: Parser[Member] = (valParse | varParse) ^^ {case s => s}
+
+  def defParse: Parser[Member] = (defParseWithArgs | defParseWithoutArgs) ^^ {case s => s}
 
   def valParse: Parser[Member] = ("val" ~> ID ~ ":" ~ className) ^^ {case (s ~ t ~ u ) => {Member(Val, s, GenericTypeDefinition(u), List[Parameter]())}}
 
   def varParse: Parser[Member] = ("var" ~> ID ~ ":" ~ className) ^^ {case (s ~ t ~ u ) => {Member(Var, s, GenericTypeDefinition(u), List[Parameter]())}}
+
+  def defParseWithArgs: Parser[Member] = ("def" ~> ID ~ parameters ~ ":" ~ className) ^^{case (s ~ t ~ u ~ v) => {Member(Def, s, GenericTypeDefinition(v), t)}}
+
+  def defParseWithoutArgs: Parser[Member] = ("def" ~> ID ~ ":" ~ className) ^^ {case (s ~ t ~ u ) => {Member(Def, s, GenericTypeDefinition(u), List[Parameter]())}}
 
   def apply(cls: Class[_]): ClassSignature = {
     apply(cls.getName)
@@ -60,8 +66,18 @@ object ClassSignature extends RegexParsers {
     }
   }
 
-  def parseMembers(memberString: String): Member = {
-    parse(member, memberString) match{
+  def parseValOrVar(memberString: String): Member = {
+    println("valOrVar" + memberString)
+    parse(valOrVar, memberString) match{
+      case Success(definition, _) => return definition
+      case Failure(msg, _) => throw new IllegalArgumentException("Failure: " + msg)
+      case Error(msg, _) => throw new IllegalArgumentException("Error: " + msg)
+    }
+  }
+
+  def parseDef(memberString: String): Member = {
+    println(memberString)
+    parse(defParse, memberString) match{
       case Success(definition, _) => return definition
       case Failure(msg, _) => throw new IllegalArgumentException("Failure: " + msg)
       case Error(msg, _) => throw new IllegalArgumentException("Error: " + msg)
@@ -85,7 +101,11 @@ case object Var extends DefType
 object MemberDefinition{
   def unapply(input: String): Option[Member] = {
     if(input.startsWith("val") || input.startsWith("var"))
-      return Some(ClassSignature.parseMembers(input))
+      return Some(ClassSignature.parseValOrVar(input))
+    else if(input.startsWith("def this("))
+      None
+    else if(input.startsWith("def"))
+      return Some(ClassSignature.parseDef(input))
     return None
   }
 }
