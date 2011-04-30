@@ -25,9 +25,9 @@ object ScalaSigParser {
   val SCALA_SIG_ANNOTATION = "Lscala/reflect/ScalaSignature;"
   val BYTES_VALUE = "bytes"
 
-  val versionMsg = "Scala classfile decoder " +
+ /* val versionMsg = "Scala classfile decoder " +
     Properties.versionString + " -- " +
-    Properties.copyrightString + "\n"
+    Properties.copyrightString + "\n"    */
 
   var printPrivates = false
 

@@ -117,13 +117,13 @@ object BeanUtils {
       val list = valueList(genericType, input)
       return resolveJavaCollectionType(cls, list)
     } else if (classOf[Option[_ <: Any]].isAssignableFrom(cls)) {
-      val c = getClassForScalaType(genericType.genericTypes.get.head.clazz)
+      val c = genericType.genericTypes.get.head.definedClass
       if (genericType.genericTypes.get.head.genericTypes.equals(None)) {
         val transformer = TransformerRegistry(c)
         return transformer.getOrElse(throw new BeanTransformationException(c)).toValue(input.toString)
       } else {
         val t = genericType.genericTypes.get.head
-        val targetCls = getClassForScalaType(t.clazz)
+        val targetCls = t.definedClass
         return Some(resolveGenerifiedValue(targetCls, t, input))
       }
     } else {
@@ -154,7 +154,7 @@ object BeanUtils {
   }
 
   private def valueList(genericType: GenericTypeDefinition, input: Any): MutableList[Any] = {
-    val c = getClassForScalaType(genericType.genericTypes.get.head.clazz)
+    val c = genericType.genericTypes.get.head.definedClass
     val transformer = TransformerRegistry(c)
     val list = new MutableList[Any]
     if (input.isInstanceOf[List[_]]) {
@@ -219,24 +219,7 @@ object BeanUtils {
     return bean
   }
 
-  private def getClassForScalaType(cls: String): Class[_] = {
-    var fieldCls: Class[_] = null
-    cls match {
-      case "scala.Long" => fieldCls = classOf[Long]
-      case "scala.Int" => fieldCls = classOf[java.lang.Integer]
-      case "scala.Float" => fieldCls = classOf[java.lang.Float]
-      case "scala.Double" => fieldCls = classOf[java.lang.Double]
-      case "scala.Boolean" => fieldCls = classOf[java.lang.Boolean]
-      case "scala.Short" => fieldCls = classOf[java.lang.Short]
-      case "scala.List" => fieldCls = classOf[List[_]]
-      case "scala.Option" => fieldCls = classOf[Option[_]]
-      case "scala.Seq" => fieldCls = classOf[Seq[_]]
-      case "scala.Set" => fieldCls = classOf[Set[_]]
-      case "scala.Predef.String" => fieldCls = classOf[java.lang.String]
-      case _ => fieldCls = Class.forName(cls)
-    }
-    fieldCls
-  }
+
 
 
   private def getClassForJavaPrimitive(cls: Class[_]): Class[_] = {

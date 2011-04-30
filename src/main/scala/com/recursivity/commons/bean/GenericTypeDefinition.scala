@@ -71,4 +71,31 @@ case class GenericTypeDefinition(clazz: String, genericTypes: Option[List[Generi
     }
     return simpleName
   }
+
+  def definedClass = getClassForType(clazz)
+
+  private def getClassForType(cls: String): Class[_] = {
+    var fieldCls: Class[_] = null
+    cls match {
+      case "long" => fieldCls = classOf[Long]
+      case "int" => fieldCls = classOf[java.lang.Integer]
+      case "float" => fieldCls = classOf[java.lang.Float]
+      case "double" => fieldCls = classOf[java.lang.Double]
+      case "boolean" => fieldCls = classOf[Boolean]
+      case "short" => fieldCls = classOf[java.lang.Short]
+      case "scala.Long" => fieldCls = classOf[Long]
+      case "scala.Int" => fieldCls = classOf[java.lang.Integer]
+      case "scala.Float" => fieldCls = classOf[java.lang.Float]
+      case "scala.Double" => fieldCls = classOf[java.lang.Double]
+      case "scala.Boolean" => fieldCls = classOf[java.lang.Boolean]
+      case "scala.Short" => fieldCls = classOf[java.lang.Short]
+      case "scala.List" => fieldCls = classOf[List[_]]
+      case "scala.Option" => fieldCls = classOf[Option[_]]
+      case "scala.Seq" => fieldCls = classOf[Seq[_]]
+      case "scala.Set" => fieldCls = classOf[Set[_]]
+      case "scala.Predef.String" => fieldCls = classOf[java.lang.String]
+      case _ => fieldCls = Class.forName(cls)
+    }
+    fieldCls
+  }
 }
