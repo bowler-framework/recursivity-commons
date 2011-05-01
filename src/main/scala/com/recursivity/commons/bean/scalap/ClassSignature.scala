@@ -18,8 +18,8 @@ import scala.util.parsing.combinator.syntactical._
 
 object ClassSignature extends RegexParsers {
   val lineBreak = System.getProperty("line.separator")
-  val VALORVAR = """([a-zA-Z0-9\[\]]|_[a-zA-Z0-9\[\]]|\_|\/|\*|\:|\=|\-|\>)*"""r
-  val DEF = """([a-zA-Z0-9\[\]]|_[a-zA-Z0-9\[\]]|\_|\/|\*|\:|\=|\-|\>|\ )*"""r
+  val VALORVAR = """([a-zA-Z0-9\[\]]|_[a-zA-Z0-9\[\]]|\_|\/|\*|\:|\=|\-|\>|\<|\+)*"""r
+  val DEF = """([a-zA-Z0-9\[\]]|_[a-zA-Z0-9\[\]]|\_|\/|\*|\:|\=|\-|\>|\ |\<|\+)*"""r
 
   val ID = """[a-zA-Z\[\]]([a-zA-Z0-9\[\]]|_[a-zA-Z0-9\[\]])*"""r
 
@@ -99,7 +99,10 @@ object ClassSignature extends RegexParsers {
 
 case class ClassSignature(clazz: String, constructor: List[Parameter], members: List[Member])
 
-case class Member(defType: DefType, name: String, returnType: GenericTypeDefinition, parameters: List[Parameter])
+case class Member(defType: DefType, name: String, returnType: GenericTypeDefinition, parameters: List[Parameter]){
+  def reflectedName = name.replace(" ", "$u0020").replace("/","$div").replace(":","$colon").
+    replace("*","$times").replace("=","$eq").replace("-","$minus").replace("+","$plus").replace(">", "$greater").replace("<","$less")
+}
 case class Parameter(name: String, paramType: GenericTypeDefinition)
 
 sealed trait DefType

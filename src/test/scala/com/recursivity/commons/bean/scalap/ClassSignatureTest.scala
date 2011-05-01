@@ -92,7 +92,7 @@ class ClassSignatureTest extends FunSuite{
     val getFunc = sig.members.find(p => p.name.startsWith("GET"))
     getFunc match{
       case Some(member) => {
-        assert(member.name == "GET /hello/:id/*/_")
+        assert(member.name == "GET /hello/:id/* /_=-><+")
         assert(member.returnType.definedClass == classOf[java.lang.String])
         assert(member.parameters.size == 1)
         assert(member.parameters(0).name == "int")
@@ -113,10 +113,23 @@ class ClassSignatureTest extends FunSuite{
     }
   }
 
+  test("Member.reflectedName for strange signatures"){
+    val sig = ClassSignature(classOf[FunkyFunctionSignatures])
+
+    val get = "GET$u0020$divhello$div$colonid$div$times$u0020$div_$eq$minus$greater$less$plus"
+    val put = "PUT$u0020$divhello$divmyworld"
+
+    val getFunc = sig.members.find(p => p.name.startsWith("GET"))
+    val putFunc = sig.members.find(p => p.name.startsWith("PUT"))
+    println(getFunc.get.reflectedName)
+    assert(get == getFunc.get.reflectedName)
+    assert(put == putFunc.get.reflectedName)
+  }
+
 }
 
 class FunkyFunctionSignatures{
-  def `GET /hello/:id/*/_`(int: Int) = "hello"
+  def `GET /hello/:id/* /_=-><+`(int: Int) = "hello"
 
   def `PUT /hello/myworld` = "world"
 }
