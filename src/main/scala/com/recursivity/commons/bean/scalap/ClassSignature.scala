@@ -18,6 +18,9 @@ import scala.util.parsing.combinator.syntactical._
 
 object ClassSignature extends RegexParsers {
   val lineBreak = System.getProperty("line.separator")
+  val VALORVAR = """([a-zA-Z0-9\[\]]|_[a-zA-Z0-9\[\]]|\_|\/|\*|\:|\=|\-|\>)*"""r
+  val DEF = """([a-zA-Z0-9\[\]]|_[a-zA-Z0-9\[\]]|\_|\/|\*|\:|\=|\-|\>|\ )*"""r
+
   val ID = """[a-zA-Z\[\]]([a-zA-Z0-9\[\]]|_[a-zA-Z0-9\[\]])*"""r
 
   def parameter: Parser[Parameter] = (opt("val" | "var") ~ ID ~ ":" ~ className) ^^ {case (x ~ s ~  f ~ n) => {Parameter(s, GenericTypeDefinition(n))}}
@@ -28,15 +31,15 @@ object ClassSignature extends RegexParsers {
 
   def valOrVar: Parser[Member] = (valParse | varParse) ^^ {case s => s}
 
-  def defParse: Parser[Member] = (defParseWithArgs | defParseWithoutArgs) ^^ {case s => s}
+  def defParse(returnType: GenericTypeDefinition): Parser[Member] = (defParseWithArgs(returnType) | defParseWithoutArgs(returnType)) ^^ {case s => s}
 
-  def valParse: Parser[Member] = ("val" ~> ID ~ ":" ~ className) ^^ {case (s ~ t ~ u ) => {Member(Val, s, GenericTypeDefinition(u), List[Parameter]())}}
+  def valParse: Parser[Member] = ("val" ~> VALORVAR ~ ":" ~ className) ^^ {case (s ~ t ~ u ) => {Member(Val, s, GenericTypeDefinition(u), List[Parameter]())}}
 
-  def varParse: Parser[Member] = ("var" ~> ID ~ ":" ~ className) ^^ {case (s ~ t ~ u ) => {Member(Var, s, GenericTypeDefinition(u), List[Parameter]())}}
+  def varParse: Parser[Member] = ("var" ~> VALORVAR ~ ":" ~ className) ^^ {case (s ~ t ~ u ) => {Member(Var, s, GenericTypeDefinition(u), List[Parameter]())}}
 
-  def defParseWithArgs: Parser[Member] = ("def" ~> ID ~ parameters ~ ":" ~ className) ^^{case (s ~ t ~ u ~ v) => {Member(Def, s, GenericTypeDefinition(v), t)}}
+  def defParseWithArgs(returnType: GenericTypeDefinition): Parser[Member] = ("def" ~> DEF ~ parameters) ^^{case (s ~ t) => {Member(Def, s, returnType, t)}}
 
-  def defParseWithoutArgs: Parser[Member] = ("def" ~> ID ~ ":" ~ className) ^^ {case (s ~ t ~ u ) => {Member(Def, s, GenericTypeDefinition(u), List[Parameter]())}}
+  def defParseWithoutArgs(returnType: GenericTypeDefinition): Parser[Member] = ("def" ~> DEF) ^^ {case (s) => {Member(Def, s, returnType, List[Parameter]())}}
 
   def apply(cls: Class[_]): ClassSignature = {
     apply(cls.getName)
@@ -67,7 +70,6 @@ object ClassSignature extends RegexParsers {
   }
 
   def parseValOrVar(memberString: String): Member = {
-    println("valOrVar" + memberString)
     parse(valOrVar, memberString) match{
       case Success(definition, _) => return definition
       case Failure(msg, _) => throw new IllegalArgumentException("Failure: " + msg)
@@ -76,8 +78,16 @@ object ClassSignature extends RegexParsers {
   }
 
   def parseDef(memberString: String): Member = {
-    println(memberString)
-    parse(defParse, memberString) match{
+    val returnTypeString = memberString.substring(memberString.lastIndexOf(":") + 2).trim
+    val functionString = memberString.substring(0, memberString.lastIndexOf(":") - 1).trim
+
+    val returnType : GenericTypeDefinition = parse(className, returnTypeString) match{
+      case Success(definition, _) => GenericTypeDefinition(definition)
+      case Failure(msg, _) => throw new IllegalArgumentException("Failure: " + msg)
+      case Error(msg, _) => throw new IllegalArgumentException("Error: " + msg)
+    }
+
+    parse(defParse(returnType), functionString) match{
       case Success(definition, _) => return definition
       case Failure(msg, _) => throw new IllegalArgumentException("Failure: " + msg)
       case Error(msg, _) => throw new IllegalArgumentException("Error: " + msg)

@@ -86,6 +86,39 @@ class ClassSignatureTest extends FunSuite{
     })
   }
 
+  test("funky function signatures"){
+    val sig = ClassSignature(classOf[FunkyFunctionSignatures])
+
+    val getFunc = sig.members.find(p => p.name.startsWith("GET"))
+    getFunc match{
+      case Some(member) => {
+        assert(member.name == "GET /hello/:id/*/_")
+        assert(member.returnType.definedClass == classOf[java.lang.String])
+        assert(member.parameters.size == 1)
+        assert(member.parameters(0).name == "int")
+        assert(member.parameters(0).paramType.definedClass == classOf[java.lang.Integer])
+
+      }
+      case None => fail
+    }
+
+    val putFunc = sig.members.find(p => p.name.startsWith("PUT"))
+    putFunc match{
+      case Some(member) => {
+        assert(member.name == "PUT /hello/myworld")
+        assert(member.returnType.definedClass == classOf[java.lang.String])
+        assert(member.parameters.size == 0)
+      }
+      case None => fail
+    }
+  }
+
+}
+
+class FunkyFunctionSignatures{
+  def `GET /hello/:id/*/_`(int: Int) = "hello"
+
+  def `PUT /hello/myworld` = "world"
 }
 
 class Hello

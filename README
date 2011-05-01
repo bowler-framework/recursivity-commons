@@ -4,7 +4,7 @@ Built with SBT (Simple-Build-Tool)
 Java classes: not written by me, but stuff I often use and compiled from various books and open source sources.
 
 MVN/SBT repo: https://oss.sonatype.org/content/repositories/releases (built against Scala 2.8.1 & 2.9.0.RC2)
-Dependency definition (sbt): "com.recursivity" %% "recursivity-commons" % "0.5.1"
+Dependency definition (sbt): "com.recursivity" %% "recursivity-commons" % "0.5.2"
 
 SCALA VALIDATOR (com.recursivity.commons.validator-package)
 Simple and extensible Scala validation framework that makes use of Scala function passing to provide a more powerful validation framework.
