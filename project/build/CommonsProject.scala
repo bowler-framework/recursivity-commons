@@ -22,14 +22,14 @@ class CommonsProject(info: ProjectInfo) extends DefaultProject(info){//} with Ch
   override def managedStyle = ManagedStyle.Maven
 
   override def deliverProjectDependencies = Nil
-	override def packageDocsJar = defaultJarPath("-javadoc.jar")
+  override def packageDocsJar = defaultJarPath("-javadoc.jar")
   override def packageSrcJar= defaultJarPath("-sources.jar")
   lazy val sourceArtifact = Artifact.sources(artifactID)
   lazy val docsArtifact = Artifact.javadoc(artifactID)
   val scalaTestRepo = "Scala Test Repo" at "http://scala-tools.org/repo-snapshots"
 
-override def packageToPublishActions = super.packageToPublishActions ++ Seq(packageDocs, packageSrc)
- override def pomExtra = {
+  override def packageToPublishActions = super.packageToPublishActions ++ Seq(packageDocs, packageSrc)
+  override def pomExtra = {
 
     // If these aren't lazy, then the build crashes looking for
     // ${moduleName}/project/build.properties.
