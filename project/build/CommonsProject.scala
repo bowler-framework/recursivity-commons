@@ -4,7 +4,7 @@ class CommonsProject(info: ProjectInfo) extends DefaultProject(info){//} with Ch
 	
   val scalatest = {
     if(buildScalaVersion.contains("2.9"))
-      "org.scalatest" % "scalatest" % "1.4.RC2" % "test"
+      "org.scalatest" %% "scalatest" % "1.4.1" % "test"
     else
       "org.scalatest" % "scalatest" % "1.3" % "test"
   }
