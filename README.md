@@ -1,3 +1,5 @@
+
+# Recursivity-commons utilities
 Various Java- and Scala utilities with no outside library dependencies.
 Built with SBT (Simple-Build-Tool)
 
@@ -11,7 +13,7 @@ Dependency definition (sbt):
 	
 	"com.recursivity" %% "recursivity-commons" % "0.5.2"
 
-## SCALA VALIDATOR (com.recursivity.commons.validator-package)
+## Scala validator (com.recursivity.commons.validator-package)
 Simple and extensible Scala validation framework that makes use of Scala function passing to provide a more powerful validation framework.
 Supports:
 
@@ -19,7 +21,7 @@ Supports:
 * Localised error messages
 * hooking in at various level of granularity, depending on your needs.
 
-## Example usage:
+### Example usage:
 
  	// setup a bean to validate
  	val bean = new MyBean("hello", 5, new Date, None)
