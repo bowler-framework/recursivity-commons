@@ -7,11 +7,11 @@ Java classes: not written by me, but stuff I often use and compiled from various
 
 MVN/SBT repo: 
 	
-	https://oss.sonatype.org/content/repositories/releases (built against Scala 2.8.1 & 2.9.0.RC2)
+	https://oss.sonatype.org/content/repositories/releases (built against Scala 2.8.1 & 2.9.0-1)
 
 Dependency definition (sbt): 
 	
-	"com.recursivity" %% "recursivity-commons" % "0.5.2"
+	"com.recursivity" %% "recursivity-commons" % "0.5.4"
 
 ## Scala validator (com.recursivity.commons.validator-package)
 Simple and extensible Scala validation framework that makes use of Scala function passing to provide a more powerful validation framework.
