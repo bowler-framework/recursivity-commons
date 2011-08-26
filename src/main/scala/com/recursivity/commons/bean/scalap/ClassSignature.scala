@@ -58,6 +58,10 @@ object ClassSignature extends RegexParsers {
         case _ => {}// ignore
       }
     }
+    if(Class.forName(clsName).getSuperclass != null){
+      val superSig = this.apply(Class.forName(clsName).getSuperclass.getName)
+      superSig.members.foreach(members += _)
+    }
     return ClassSignature(clsName, constructor.toList, members.toList)
   }
 

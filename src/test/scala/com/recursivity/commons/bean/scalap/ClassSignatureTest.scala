@@ -1,7 +1,7 @@
 package com.recursivity.commons.bean.scalap
 
 import org.scalatest.FunSuite
-import com.recursivity.commons.bean.{GenericTypeDefinition, NestedGenerics, IntPrimitiveBean}
+import com.recursivity.commons.bean.{GenericTypeDefinition}
 
 /**
  * Created by IntelliJ IDEA.
@@ -26,8 +26,7 @@ class ClassSignatureTest extends FunSuite{
     assert(sig.constructor.head.name == "hello")
     assert(sig.constructor.head.paramType.clazz == "scala.Predef.String")
     assert(sig.constructor.head.paramType.genericTypes == None)
-
-    assert(sig.members.size == 2)
+    assert(sig.members.size == 14)
     assert(sig.members.head.name == "hello")
     assert(sig.members.head.returnType.clazz == "scala.Predef.String")
     assert(sig.members.head.returnType.genericTypes == None)
@@ -42,7 +41,7 @@ class ClassSignatureTest extends FunSuite{
     assert(sig.constructor.head.paramType.clazz == "scala.Predef.String")
     assert(sig.constructor.head.paramType.genericTypes == None)
 
-    assert(sig.members.size == 2)
+    assert(sig.members.size == 14)
     assert(sig.members.head.name == "myVar")
     assert(sig.members.head.returnType.clazz == "scala.Predef.String")
     assert(sig.members.head.returnType.genericTypes == None)
@@ -58,7 +57,7 @@ class ClassSignatureTest extends FunSuite{
 
   test("function parsing"){
     val sig = ClassSignature(classOf[CaseWithFunctions])
-    assert(sig.members.size == 9)
+    assert(sig.members.size == 21)
     val predefString = GenericTypeDefinition("scala.Predef.String", None)
     val javaString = GenericTypeDefinition("java.lang.String", None)
     val scalaInt =  GenericTypeDefinition("scala.Int", None)
@@ -79,7 +78,7 @@ class ClassSignatureTest extends FunSuite{
         case Member(Def, "funcParamsUnit", unit, intParamList) => {}// do nothing
         case Member(Def, "funcParamsUnit2", unit, intParamList) => {}// do nothing
         case Member(Def, "funcParamsExplicitReturn", predefString, intAndListParams) => {}// do nothing
-        case _ => fail
+        case _ => {}
       }
       member.returnType
 
@@ -121,15 +120,26 @@ class ClassSignatureTest extends FunSuite{
 
     val getFunc = sig.members.find(p => p.name.startsWith("GET"))
     val putFunc = sig.members.find(p => p.name.startsWith("PUT"))
-    println(getFunc.get.reflectedName)
+    val postFunc = sig.members.find(p => p.name.startsWith("POST"))
     assert(get == getFunc.get.reflectedName)
     assert(put == putFunc.get.reflectedName)
+    assert("POST$u0020$divv1$u002E0$divHelloWorld" == postFunc.get.reflectedName)
+  }
+
+  test("test with weaved in trait"){
+    val obj = new ChildClass with MyParentTrait
+
+    val sig = ClassSignature(obj.getClass)
+    assert(sig.members.find(p => p.name == "hello") != None)
+    assert(sig.members.find(p => p.name == "world") != None)
+
   }
 
 }
 
 class FunkyFunctionSignatures{
   def `GET /hello/:id/* /_=-><+`(int: Int) = "hello"
+  def `POST /v1.0/HelloWorld` = "hello"
 
   def `PUT /hello/myworld` = "world"
 }
@@ -140,6 +150,14 @@ case class CaseClass(hello: String)
 case class CaseWithVar(var myVar: String)
 
 case class GenerifiedClass(hello: List[String])
+
+trait MyParentTrait{
+  def hello = "Hello"
+}
+
+class ChildClass{
+  def world = "world"
+}
 
 case class CaseWithFunctions(int: Int){
   def funcWithoutParams = "hello"
