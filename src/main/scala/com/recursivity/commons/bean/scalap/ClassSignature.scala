@@ -83,7 +83,7 @@ object ClassSignature extends RegexParsers {
 
   def parseDef(memberString: String): Member = {
     val returnTypeString = memberString.substring(memberString.lastIndexOf(":") + 2).trim
-    val functionString = memberString.substring(0, memberString.lastIndexOf(":") - 1).trim
+    val functionString = ReflectedName.unapply(memberString.substring(0, memberString.lastIndexOf(":") - 1).trim)
 
     val returnType : GenericTypeDefinition = parse(className, returnTypeString) match{
       case Success(definition, _) => GenericTypeDefinition(definition)
@@ -101,11 +101,28 @@ object ClassSignature extends RegexParsers {
 
 }
 
+object ReflectedName {
+  val tokens = List[Tuple2[String, String]](
+    (" ", "$u0020"),
+    ("/", "$div"),
+    (":", "$colon"),
+    ("*", "$times"),
+    ("=", "$eq"),
+    ("-", "$minus"),
+    ("+", "$plus"),
+    (">", "$greater"),
+    ("<", "$less"),
+    (".", "$u002E")
+  )
+
+  def apply(name: String) = tokens.foldLeft(name)((s, t) => s.replace(t._1, t._2))
+  def unapply(name: String) = tokens.foldLeft(name)((s, t) => s.replace(t._2, t._1))
+}
+
 case class ClassSignature(clazz: String, constructor: List[Parameter], members: List[Member])
 
 case class Member(defType: DefType, name: String, returnType: GenericTypeDefinition, parameters: List[Parameter]){
-  def reflectedName = name.replace(" ", "$u0020").replace("/","$div").replace(":","$colon").
-    replace("*","$times").replace("=","$eq").replace("-","$minus").replace("+","$plus").replace(">", "$greater").replace("<","$less").replace(".", "$u002E")
+  def reflectedName = ReflectedName(name)
 }
 case class Parameter(name: String, paramType: GenericTypeDefinition)
 
