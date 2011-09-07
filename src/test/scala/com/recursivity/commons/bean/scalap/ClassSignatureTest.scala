@@ -132,7 +132,9 @@ class ClassSignatureTest extends FunSuite{
     val sig = ClassSignature(obj.getClass)
     assert(sig.members.find(p => p.name == "hello") != None)
     assert(sig.members.find(p => p.name == "world") != None)
-
+    val put = "PUT$u0020$divhello$divmyworld"
+    val putFunc = sig.members.find(p => p.name.startsWith("PUT"))
+    assert(put == putFunc.get.reflectedName)
   }
 
 }
@@ -153,6 +155,7 @@ case class GenerifiedClass(hello: List[String])
 
 trait MyParentTrait{
   def hello = "Hello"
+  def `PUT /hello/myworld` = "world"
 }
 
 class ChildClass{
