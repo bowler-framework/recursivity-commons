@@ -33,7 +33,6 @@ object ScalaSigParser {
 
 
   def processJavaClassFile(clazz: Classfile): String = {
-    println("processing class file")
     val out = new StringWriter
     //val out = new OutputStreamWriter(Console.out)
     val writer = new JavaWriter(clazz, out)

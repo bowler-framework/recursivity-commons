@@ -13,7 +13,6 @@ import collection.mutable.MutableList
 case class NotNullOrNoneValidator[T](key: String, value: () => T) extends Validator {
   def isValid: Boolean = {
     val validatable = value()
-    println("validatable = "+ validatable == null)
 
     if (validatable == null) return false
     if (validatable.isInstanceOf[Option[T]]) {
