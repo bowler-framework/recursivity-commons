@@ -1,6 +1,6 @@
 import sbt._
 
-class CommonsProject(info: ProjectInfo) extends DefaultProject(info){//} with ChecksumPlugin{
+class CommonsProject(info: ProjectInfo) extends DefaultProject(info) with ChecksumPlugin{
 	
   val scalatest = {
     if(buildScalaVersion.contains("2.9"))
