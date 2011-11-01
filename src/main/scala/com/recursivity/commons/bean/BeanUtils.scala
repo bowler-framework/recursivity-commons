@@ -61,7 +61,7 @@ object BeanUtils {
     return cons.newInstance(list.toArray: _*).asInstanceOf[T]
   }
 
-  private def setProperty(cls: Class[_], bean: Any, key: String, value: Any) {
+  def setProperty(cls: Class[_], bean: Any, key: String, value: Any) {
     try {
       val field = cls.getDeclaredField(key)
       val fieldCls = getClassForJavaPrimitive(field.getType)
