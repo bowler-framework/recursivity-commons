@@ -67,8 +67,14 @@ object ScalaSigParser {
     val bytes = new Array[Byte](len)
 
     var cur = 0
-    while (cur != -1)
-      cur += stream.read(bytes, cur, len - cur)
+    var finished = false
+    while (!finished && cur != len) {
+      val read = stream.read(bytes, cur, len - cur)
+      finished = read == -1
+      if (!finished)
+        cur += read
+    }
+    assert(cur == len)
 
     bytes
   }
