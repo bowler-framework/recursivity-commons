@@ -48,10 +48,9 @@ object ScalaSigParser {
       else classname)
     val name = "/" + encName.replace(".", "/") + ".class"
     val resource = this.getClass.getResourceAsStream(name)
-    val bytes = new Array[Byte](resource.available)
-    resource.read(bytes)
 
-    //val bytes = null//cfile.toByteArray
+    val bytes = readToBytes(resource)
+
     if (isScalaFile(bytes)) {
       return decompileScala(bytes, isPackageObjectFile(classname))
     } else {
@@ -61,6 +60,17 @@ object ScalaSigParser {
       val clazz = new Classfile(reader)
       return processJavaClassFile(clazz)
     }
+  }
+
+  def readToBytes(stream: java.io.InputStream): Array[Byte] = {
+    val len = stream.available
+    val bytes = new Array[Byte](len)
+
+    var cur = 0
+    while (cur != -1)
+      cur += stream.read(bytes, cur, len - cur)
+
+    bytes
   }
 
   def isPackageObjectFile(s: String) = s != null && (s.endsWith(".package") || s == "package")
