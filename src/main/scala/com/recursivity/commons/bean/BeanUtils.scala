@@ -109,7 +109,7 @@ object BeanUtils {
     result
   }
 
-  private def resolveGenerifiedValue(cls: Class[_], genericType: GenericTypeDefinition, input: Any): Any = {
+  def resolveGenerifiedValue(cls: Class[_], genericType: GenericTypeDefinition, input: Any): Any = {
     if (classOf[TraversableLike[_ <: Any, _ <: Any]].isAssignableFrom(cls)) {
       val list = valueList(genericType, input)
       return resolveTraversableOrArray(cls, list)
@@ -131,7 +131,7 @@ object BeanUtils {
     }
   }
 
-  def resolveJavaCollectionType(cls: Class[_], list: MutableList[_]): Any = {
+  def resolveJavaCollectionType(cls: Class[_], list: scala.collection.Seq[_]): Any = {
     if(classOf[java.util.Set[_]].isAssignableFrom(cls)){
       var set: java.util.Set[Any] = null
       try{
@@ -153,7 +153,7 @@ object BeanUtils {
     }
   }
 
-  private def valueList(genericType: GenericTypeDefinition, input: Any): MutableList[Any] = {
+  def valueList(genericType: GenericTypeDefinition, input: Any): MutableList[Any] = {
     val c = genericType.genericTypes.get.head.definedClass
     val transformer = TransformerRegistry(c)
     val list = new MutableList[Any]
@@ -170,7 +170,7 @@ object BeanUtils {
   // due to the trickiness of supporting immutable sets/lists, types are hard coded here with no support for extension
   // of immutable Scala Sets/Lists, TreeSet is not supported
   //
-  def resolveTraversableOrArray(cls: Class[_], list: MutableList[_]): Any = {
+  def resolveTraversableOrArray(cls: Class[_], list: scala.collection.Seq[_]): Any = {
     if (cls.equals(classOf[List[_]])) {
       return list.toList
     } else if (cls.equals(classOf[Set[_]]))
