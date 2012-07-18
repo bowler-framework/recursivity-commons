@@ -12,6 +12,7 @@ object TransformerRegistry{
   registry += classOf[Boolean] -> classOf[JavaBooleanTransformer]
   registry += classOf[java.util.Date] -> classOf[DateTransformer]
   registry += classOf[Int] -> classOf[JavaIntegerTransformer]
+  registry += classOf[Double] -> classOf[ScalaDoubleTransformer]
   registry += classOf[java.math.BigDecimal] -> classOf[JavaBigDecimalTransformer]
   registry += classOf[java.lang.Boolean] -> classOf[JavaBooleanTransformer]
   registry += classOf[java.lang.Integer] -> classOf[JavaIntegerTransformer]
