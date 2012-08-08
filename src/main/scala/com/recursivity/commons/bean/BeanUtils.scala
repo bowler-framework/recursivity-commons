@@ -181,6 +181,8 @@ object BeanUtils {
       return new ListSet ++ list.toList
     else if (cls.equals(classOf[HashSet[_]]))
       return new HashSet ++ list.toList
+    else if (cls.equals(classOf[scala.collection.mutable.HashSet[_]]))
+      return new scala.collection.mutable.HashSet ++ list.toList
     else if (cls.equals(classOf[scala.collection.Seq[_]]) || cls.equals(classOf[Seq[_]])) {
       return list.toList
     }else {
