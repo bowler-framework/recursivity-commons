@@ -10,7 +10,7 @@ class CommonsProject(info: ProjectInfo) extends DefaultProject(info){//} with Ch
   }
 
   val asm = "org.scala-lang" % "scalap" % buildScalaVersion
-	
+
   Credentials(Path.userHome / ".ivy2" / ".credentials", log)
 
   val publishTo = {
@@ -27,6 +27,7 @@ class CommonsProject(info: ProjectInfo) extends DefaultProject(info){//} with Ch
   lazy val sourceArtifact = Artifact.sources(artifactID)
   lazy val docsArtifact = Artifact.javadoc(artifactID)
   val scalaTestRepo = "Scala Test Repo" at "http://scala-tools.org/repo-snapshots"
+  val typesafeRepo = "Typesafe Repo" at "http://repo.typesafe.com/typesafe/releases"
 
   override def packageToPublishActions = super.packageToPublishActions ++ Seq(packageDocs, packageSrc)
   override def pomExtra = {
