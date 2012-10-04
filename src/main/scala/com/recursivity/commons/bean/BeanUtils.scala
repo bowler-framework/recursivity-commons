@@ -4,7 +4,6 @@ import collection.immutable._
 import collection.{TraversableLike}
 import collection.mutable.{DoubleLinkedList, LinkedList, Builder, MutableList}
 import java.lang.reflect.{Field, Constructor, ParameterizedType}
-import scalap.{Member, ClassSignature}
 
 /**
  * Utility class that is able to create new instances of arbitrary objects and fill them with values/vars based on
@@ -87,6 +86,8 @@ object BeanUtils {
     if(!typeDefHasObject(typeDef))
       field.set(bean, resolveGenerifiedValue(fieldCls, typeDef, value))
     else{
+	throw new Exception("Busted with scala 2.9.2")
+	/*
       val signature = ClassSignature(bean.asInstanceOf[AnyRef].getClass)
       var member: Option[Member] = None
       signature.members.foreach(f => {
@@ -95,6 +96,7 @@ object BeanUtils {
       })
       field.set(bean, resolveGenerifiedValue(fieldCls, member.getOrElse(throw new
           IllegalArgumentException("Could not resolve generic type for: " + member)).returnType, value))
+	*/
     }
   }
 

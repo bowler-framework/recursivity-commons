@@ -14,9 +14,7 @@ class CommonsProject(info: ProjectInfo) extends DefaultProject(info){//} with Ch
   Credentials(Path.userHome / ".ivy2" / ".credentials", log)
 
   val publishTo = {
-	if(version.toString.endsWith("-SNAPSHOT"))
-		"Sonatype Nexus Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
-	else "Sonatype Nexus Staging" at "https://oss.sonatype.org/service/local/staging/deploy/maven2"
+		"libs-releases-local" at "http://xeralux.artifactoryonline.com/xeralux/simple/libs-releases-local/"
   }
 
   override def managedStyle = ManagedStyle.Maven
