@@ -236,6 +236,7 @@ object BeanUtils {
       case "double" => fieldCls = classOf[java.lang.Double]
       case "boolean" => fieldCls = classOf[Boolean]
       case "short" => fieldCls = classOf[java.lang.Short]
+      case "byte" => fieldCls = classOf[java.lang.Byte]
       case _ => fieldCls = cls
     }
     return fieldCls
