@@ -187,7 +187,9 @@ object BeanUtils {
       return new scala.collection.mutable.HashSet ++ list.toList
     else if (cls.equals(classOf[scala.collection.Seq[_]]) || cls.equals(classOf[Seq[_]])) {
       return list.toList
-    }else {
+    } else if (cls.equals(classOf[::[_]])) // Handle a simple scala :: cons list
+	  return list.toList
+	else {
       val listOrSet = cls.newInstance
       if (classOf[Builder[Any, Any]].isAssignableFrom(cls)) {
         val builder = listOrSet.asInstanceOf[Builder[Any, Any]]
