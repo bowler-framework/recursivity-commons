@@ -21,7 +21,9 @@ object TransformerRegistry{
   registry += classOf[java.lang.Float] -> classOf[FloatTransformer]
   registry += classOf[Long] -> classOf[LongTransformer]
   registry += classOf[Short] -> classOf[ShortTransformer]
+  registry += classOf[Byte] -> classOf[ByteTransformer]
   registry += classOf[java.lang.Short] -> classOf[ShortTransformer]
+  registry += classOf[java.lang.Byte] -> classOf[ByteTransformer]
 
   private val singletonRegistry = new HashMap[Class[_], StringValueTransformer[_]]
 

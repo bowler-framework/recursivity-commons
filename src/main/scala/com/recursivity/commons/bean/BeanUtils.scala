@@ -4,7 +4,6 @@ import collection.immutable._
 import collection.{TraversableLike}
 import collection.mutable.{DoubleLinkedList, LinkedList, Builder, MutableList}
 import java.lang.reflect.{Field, Constructor, ParameterizedType}
-import scalap.{Member, ClassSignature}
 
 /**
  * Utility class that is able to create new instances of arbitrary objects and fill them with values/vars based on
@@ -87,6 +86,8 @@ object BeanUtils {
     if(!typeDefHasObject(typeDef))
       field.set(bean, resolveGenerifiedValue(fieldCls, typeDef, value))
     else{
+	throw new Exception("Busted with scala 2.9.2")
+	/*
       val signature = ClassSignature(bean.asInstanceOf[AnyRef].getClass)
       var member: Option[Member] = None
       signature.members.foreach(f => {
@@ -95,6 +96,7 @@ object BeanUtils {
       })
       field.set(bean, resolveGenerifiedValue(fieldCls, member.getOrElse(throw new
           IllegalArgumentException("Could not resolve generic type for: " + member)).returnType, value))
+	*/
     }
   }
 
@@ -181,9 +183,13 @@ object BeanUtils {
       return new ListSet ++ list.toList
     else if (cls.equals(classOf[HashSet[_]]))
       return new HashSet ++ list.toList
+    else if (cls.equals(classOf[scala.collection.mutable.HashSet[_]]))
+      return new scala.collection.mutable.HashSet ++ list.toList
     else if (cls.equals(classOf[scala.collection.Seq[_]]) || cls.equals(classOf[Seq[_]])) {
       return list.toList
-    }else {
+    } else if (cls.equals(classOf[::[_]])) // Handle a simple scala :: cons list
+	  return list.toList
+	else {
       val listOrSet = cls.newInstance
       if (classOf[Builder[Any, Any]].isAssignableFrom(cls)) {
         val builder = listOrSet.asInstanceOf[Builder[Any, Any]]
@@ -232,6 +238,7 @@ object BeanUtils {
       case "double" => fieldCls = classOf[java.lang.Double]
       case "boolean" => fieldCls = classOf[Boolean]
       case "short" => fieldCls = classOf[java.lang.Short]
+      case "byte" => fieldCls = classOf[java.lang.Byte]
       case _ => fieldCls = cls
     }
     return fieldCls
